@@ -7,13 +7,14 @@ class PermissionEngine:
         self.pending_approvals = {}
 
     def get_baseline_risk(self, tool_name: str) -> RiskLevel:
-        if tool_name in ["filesystem.read", "web.search", "dummy_action"]:
+        base_name = tool_name.replace("mcp.", "")
+        if base_name in ["filesystem.read", "web.search", "dummy_action"]:
             return RiskLevel.LOW
-        elif tool_name in ["filesystem.write"]:
+        elif base_name in ["filesystem.write"]:
             return RiskLevel.MEDIUM
-        elif tool_name in ["shell.execute", "message.send"]:
+        elif base_name in ["shell.execute", "message.send"]:
             return RiskLevel.HIGH
-        elif tool_name in ["data.delete", "system.deploy"]:
+        elif base_name in ["data.delete", "system.deploy"]:
             return RiskLevel.CRITICAL
         return RiskLevel.HIGH # Unknown tools default to HIGH
 
