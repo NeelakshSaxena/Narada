@@ -1079,4 +1079,5 @@ License information has not yet been defined.
 
 **Early development.**
 
-The architecture, rules, and phased build plan are being established before broad implementation begins.
+- **Phase 0 (Architecture Freeze):** Completed. Initial architectural boundaries, core interfaces, and configurations have been defined.
+- **Phase 1 (NĀRADA CORE Container):** Pending.

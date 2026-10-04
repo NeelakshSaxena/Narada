@@ -1,0 +1,17 @@
+[project]
+name = "narada"
+version = "0.1.0"
+description = "A personal autonomous agent runtime."
+authors = [{ name = "Neelaksh Saxena" }]
+requires-python = ">=3.10"
+dependencies = [
+    "fastapi>=0.100.0",
+    "uvicorn>=0.23.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
