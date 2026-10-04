@@ -1,0 +1,13 @@
+feat: implement Phase 6 permissions and approval engine
+
+This commit satisfies Phase 6 of the Narada blueprint by embedding an explicit Permissions Engine directly into the runtime's core execution loop, guaranteeing architectural safety.
+
+Key additions and enforcements:
+- Defined exhaustive permission and risk metadata models (`core/permissions/models.py`) capturing dimensions like identity, tool, scope, and strict RiskLevels (`NONE`, `LOW`, `MEDIUM`, `HIGH`, `CRITICAL`).
+- Built the `PermissionEngine` (`core/permissions/engine.py`) to systematically map tool usage against a baseline safety policy, dynamically calculating when an action demands explicit human approval.
+- Tightly integrated the engine into the `Executor` (`core/agent/executor.py`). High-risk actions now halt execution and enter a `PENDING_APPROVAL` state, physically preventing side effects without verified authorization.
+- Enforced hard boundaries preventing the LLM identity (`agent_*` or `llm`) from mathematically marking its own operations as approved.
+- Designed comprehensive unit tests (`tests/permissions/test_engine.py`) guaranteeing retries safely reflect the paused state without bypassing gates.
+- Authored the Phase 6 logbook and updated project status.
+
+These security boundaries ensure that Nārada can be trusted to run persistently without executing destructive operations autonomously.
