@@ -1,0 +1,13 @@
+feat: implement Phase 1 core container and backend entrypoint
+
+This commit establishes the initial Narada Core container setup as mandated by Phase 1 of NARADA_DETAILED_AGENTIC_BUILD.md. The primary objective is to define the single persistent backend runtime container that avoids unnecessary infrastructure sprawl.
+
+Key additions:
+- Created the foundational FastAPI entrypoint (`apps/api/main.py`) exposing a `/health` route, fulfilling the core container health check requirement.
+- Stubbed the `Gateway` (`core/gateway/gateway.py`) and `AgentRuntime` (`core/runtime/runtime.py`) classes to act as the primary operational boundaries.
+- Defined a `Dockerfile` for `narada-core` using Python 3.11-slim, ensuring a minimal but capable baseline container.
+- Updated `docker-compose.yml` to orchestrate `narada-core`, specifically mounting the `./data` directory to `/app/data` within the container. This explicitly satisfies the architectural requirement that SQLite remains a persistent file mount rather than an independent service, guaranteeing that tasks and memories survive container restarts.
+- Compiled the Phase 1 Logbook detailing the exit criteria execution.
+- Updated project status in README.md.
+
+These changes construct the physical boundary in which the agent will operate, setting the stage for Phase 2 configuration loading.

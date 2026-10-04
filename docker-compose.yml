@@ -1,0 +1,13 @@
+services:
+  narada-core:
+    build: .
+    container_name: narada-core
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+      # Mount the data directory for SQLite persistence across restarts
+      - ./data:/app/data
+    environment:
+      - ENV=development
+    restart: unless-stopped
