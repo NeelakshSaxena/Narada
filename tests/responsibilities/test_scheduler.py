@@ -6,9 +6,10 @@ from core.responsibilities.scheduler import ResponsibilityScheduler
 from core.skills.base import SkillRegistry, Skill
 from core.tools.registry import ToolRegistry
 
-@pytest.mark.asyncio
-async def test_responsibility_model_scheduling():
+def test_responsibility_model_scheduling():
+    from core.responsibilities.models import ResponsibilityStatus
     resp = Responsibility(schedule_interval_seconds=60)
+    resp.status = ResponsibilityStatus.ACTIVE
     assert resp.is_due() is True
     
     resp.mark_executed()
@@ -18,8 +19,7 @@ async def test_responsibility_model_scheduling():
     resp.next_run_at = datetime.utcnow() - timedelta(seconds=1)
     assert resp.is_due() is True
 
-@pytest.mark.asyncio
-async def test_scheduler_execution_context():
+def test_scheduler_execution_context():
     registry = SkillRegistry()
     registry.register(Skill(
         name="test_skill", purpose="test", inputs={}, outputs={}, required_tools=[],
@@ -35,6 +35,8 @@ async def test_scheduler_execution_context():
         delivery_target="console",
         permissions=["web.read"]
     )
+    from core.responsibilities.models import ResponsibilityStatus
+    resp.status = ResponsibilityStatus.ACTIVE
     scheduler.add_responsibility(resp)
     
     async def mock_llm_call(prompt: str) -> str:
@@ -46,7 +48,7 @@ async def test_scheduler_execution_context():
         return "New commit xyz found."
 
     # Manually trigger execution instead of running the endless loop
-    await scheduler.execute_responsibility(resp, mock_llm_call)
+    asyncio.run(scheduler.execute_responsibility(resp, mock_llm_call))
     
     # State should be updated
     assert resp.memory_state["last_result"] == "New commit xyz found."

@@ -1,0 +1,8 @@
+feat: implement Phase 11 Responsibility Engine
+
+Expands the background tasks model into a true lifecycle engine. 
+
+- Enforces explicit `DRAFT -> ACTIVE -> PAUSED -> ACTIVE -> COMPLETED` constraints.
+- Adds memory namespaces and trigger rules for dynamic event matching.
+- Enforces error/recovery bounding to prevent failed autonomous tasks from looping infinitely.
+- Validated via state machine lifecycle tests.
