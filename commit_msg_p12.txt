@@ -1,0 +1,7 @@
+feat: implement Phase 12 Event-Driven Wakeups
+
+Transforms the scheduled execution model into a reactive autonomous engine.
+
+- Introduces the standardized `Event` abstraction to capture asynchronous triggers (webhooks, timers, file changes).
+- Constructs the `EventPipeline` bridging events to autonomous responsibility execution via: normalization, persistence, trigger-matching, and LLM relevance filtering.
+- Validates the pipeline dynamically injects event payloads into a fresh `Executor` memory state via testing.
