@@ -1,0 +1,30 @@
+{
+  "name": "web_research",
+  "purpose": "Allow Narada to research and inspect public information directly from the web using lightweight extraction tools.",
+  "inputs": {
+    "topic": "The topic or question to research"
+  },
+  "outputs": {
+    "summary": "A synthesized summary of facts answering the topic query"
+  },
+  "required_tools": ["web.search", "web.open"],
+  "constraints": [
+    "State what information is needed before searching.",
+    "Prefer authoritative sources.",
+    "Search using the available web tool.",
+    "Open relevant sources.",
+    "Extract only information needed for the goal.",
+    "Track source URLs.",
+    "Distinguish facts from inference.",
+    "If evidence conflicts, report the conflict.",
+    "Stop searching when additional search is unlikely to materially improve the answer.",
+    "Do not fabricate sources.",
+    "Do not claim a page was opened if it was not.",
+    "Do not treat search snippets as verified facts.",
+    "Do not continue searching indefinitely. Exclude visited URLs."
+  ],
+  "verification_steps": [
+    "query -> search -> open -> extract -> summarize -> memory write"
+  ],
+  "failure_behavior": "If search repeatedly fails, search loops indefinitely, or citations cannot be verified, abort research and report failure."
+}
