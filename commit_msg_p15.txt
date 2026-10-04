@@ -1,0 +1,8 @@
+feat: implement Phase 15 Sandbox Runtime
+
+Closes out Phase 15 by securing the agent's execution boundaries.
+
+- Replaces the raw `SandboxProvider` definition with a `SandboxManager` orchestrator in `core/runtime/sandbox.py`.
+- Introduces `SandboxSession` to track stateful, ephemeral execution windows.
+- Enforces strict execution guardrails preventing commands from running on terminated sandbox sessions.
+- Verified sandbox lifecycle bounds via `tests/runtime/test_sandbox.py`.
