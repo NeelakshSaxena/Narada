@@ -8,7 +8,7 @@ class PermissionEngine:
 
     def get_baseline_risk(self, tool_name: str) -> RiskLevel:
         base_name = tool_name.replace("mcp.", "")
-        if base_name in ["filesystem.read", "web.search", "dummy_action"]:
+        if base_name in ["filesystem.read", "web.search", "web.open", "dummy_action"]:
             return RiskLevel.LOW
         elif base_name in ["filesystem.write"]:
             return RiskLevel.MEDIUM

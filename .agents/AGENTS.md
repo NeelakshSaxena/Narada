@@ -620,6 +620,8 @@ Use profiles so BASE development does not require every future service. The init
 
 Do not require AWS for core development.
 
+Always use a Python virtual environment (`venv` or `.venv`) for local development, tests, and dependency execution when available.
+
 ---
 
 ## 16. Security and Secrets
