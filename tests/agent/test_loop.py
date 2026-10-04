@@ -18,6 +18,22 @@ class DummyTool(ToolProvider):
     def description(self) -> str:
         return "Does nothing"
 
+    @property
+    def risk(self) -> str:
+        return "low"
+
+    @property
+    def requires_confirmation(self) -> bool:
+        return False
+
+    @property
+    def input_schema(self) -> dict:
+        return {}
+
+    @property
+    def output_schema(self) -> dict:
+        return {}
+
     async def execute(self, **kwargs) -> Any:
         return "Success"
 
@@ -45,7 +61,7 @@ async def test_agent_loop_deterministic_completion():
     registry = ToolRegistry()
     registry.register(DummyTool())
     
-    executor = Executor(tool_registry=registry)
+    executor = Executor(tool_registry=registry, allowed_tools=["dummy_action"])
     llm = ScriptedLLMProvider()
     
     loop = AgentLoop(llm_provider=llm, executor=executor)
@@ -60,5 +76,5 @@ async def test_agent_loop_deterministic_completion():
     assert len(final_state.plan) > 0
     assert len(final_state.actions) == 1
     assert final_state.actions[0]["name"] == "dummy_action"
-    assert final_state.observations[0] == "Success"
+    assert final_state.observations[0]["result"] == "Success"
     assert final_state.decision == "COMPLETE"

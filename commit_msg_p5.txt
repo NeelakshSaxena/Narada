@@ -1,0 +1,13 @@
+feat: implement Phase 5 tool registry and authorization bounds
+
+This commit satisfies Phase 5 of the Narada blueprint by establishing a rigorous capability registry that strictly separates the concepts of "tool existence" from "tool permission".
+
+Key additions and enforcements:
+- Refactored `ToolProvider` (`core/tools/base.py`) to enforce essential risk and schema metadata, ensuring every tool exposes its classification (`low`, `high`), confirmation requirements, and I/O shapes.
+- Architected the lifecycle inside `Executor` (`core/agent/executor.py`) to mandate discovery, validation, explicit authorization, observation formatting, and persistent auditing.
+- Implemented three foundational tools (`providers/tools/filesystem.py`, `providers/tools/web.py`): `filesystem.read`, `filesystem.write`, and `web.search`.
+- Constructed strict test scenarios (`tests/tools/test_registry.py`) that mathematically prove unauthorized tool attempts generate `DENIED` audit events and fail before causing any side effects.
+- Aligned existing agent loop tests to support the new structured `{"status": ..., "result": ...}` observation payloads.
+- Authored the Phase 5 logbook and updated project status.
+
+These boundaries guarantee that Narada can securely wield capabilities without unauthorized autonomy.
