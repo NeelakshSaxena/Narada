@@ -1,0 +1,7 @@
+feat: implement Phase 13 Notification Gateway
+
+Completes Phase 13 by formalizing the agent-to-user communication bridge.
+
+- Builds the core `DeliveryGateway` abstraction inside `core/notifications/gateway.py`, routing target-specific payloads.
+- Introduces `ConsoleProvider` inside `providers/notifications/` for local mock delivery routing.
+- Tested deterministically in `tests/notifications/test_gateway.py` to ensure provider resolution and error states are rigidly managed.
