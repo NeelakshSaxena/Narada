@@ -1,0 +1,8 @@
+feat: implement Phase 14 Notification Policy and Deduplication
+
+Closes Phase 14 by establishing strict noise-reduction bounds on the autonomous agent.
+
+- Introduces the `EventDeduplicator` (`core/events/dedup.py`) capable of generating deterministic signatures for incoming events (using explicit IDs or SHA-256 payload hashes).
+- Directly integrates the deduplication check inside the `EventPipeline` to drop duplicate pings before any processing occurs.
+- Implements `NotificationPolicy` enums (`silent`, `urgent`, etc.) and a `PolicyEvaluator` (`core/notifications/policy.py`) to categorize the outcome of background execution.
+- Deterministic testing in `tests/events/test_dedup.py` and `tests/notifications/test_policy.py` confirms noise is accurately filtered.

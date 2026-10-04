@@ -2,12 +2,14 @@ from typing import List, Callable, Awaitable
 from core.events.models import Event
 from core.responsibilities.models import Responsibility
 from core.responsibilities.scheduler import ResponsibilityScheduler
+from core.events.dedup import EventDeduplicator
 
 class EventPipeline:
     def __init__(self, scheduler: ResponsibilityScheduler, llm_callback: Callable[[str], Awaitable[str]]):
         self.scheduler = scheduler
         self.llm_callback = llm_callback
         self.event_store = [] # Simple persistence
+        self.deduplicator = EventDeduplicator()
         
     def normalize(self, raw_event: dict) -> Event:
         # Converts a raw external payload into our internal Event schema
@@ -49,6 +51,11 @@ class EventPipeline:
         
     async def process_raw_event(self, raw_event: dict):
         event = self.normalize(raw_event)
+        
+        ext_id = raw_event.get("external_event_id")
+        if self.deduplicator.is_duplicate(event, ext_id):
+            return # Skip duplicate
+            
         self.persist(event)
         matched = self.match_responsibilities(event)
         relevant = await self.filter_irrelevant(event, matched)
