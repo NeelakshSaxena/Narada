@@ -1,9 +1,10 @@
 from abc import ABC, abstractmethod
 from typing import Any
+from core.llm.models import LLMResponse
 
 class LLMProvider(ABC):
     @abstractmethod
-    async def generate(self, prompt: str, **kwargs) -> Any:
+    async def generate(self, prompt: str, **kwargs) -> LLMResponse:
         pass
 
     @abstractmethod

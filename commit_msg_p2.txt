@@ -1,0 +1,13 @@
+feat: implement Phase 2 configuration loading and provider gateways
+
+This commit finalizes Phase 2 by establishing a robust, configuration-driven LLM provider gateway for Narada. The primary objective is to allow dynamic switching between local (Ollama) and remote (Sarvam) LLM inference without requiring any changes to the core agent logic.
+
+Key additions and enforcements:
+- Implemented `core/config/settings.py` using standard environment variable resolution. This isolates sensitive credentials (e.g., SARVAM_API_KEY) and network locations (e.g., OLLAMA_BASE_URL) entirely outside the codebase.
+- Defined strictly normalized models `LLMResponse` and `LLMError` in `core/llm/models.py`. This ensures that provider-specific nuances and error structures never leak into the broader Narada runtime.
+- Refactored `core/providers/base.py` to enforce the new normalized return types.
+- Created adapter implementations for `FakeLLMProvider`, `SarvamProvider`, and `OllamaProvider` ensuring standard behavior across disparate APIs.
+- Included comprehensive `pytest-asyncio` test coverage in `tests/providers/test_llm_providers.py`, strictly utilizing fakes/mocks to guarantee CI environments require no live API credentials.
+- Drafted Phase 2 logbook and updated project status.
+
+These changes construct the critical abstraction layer required before introducing the foundational agent loop in Phase 3.
