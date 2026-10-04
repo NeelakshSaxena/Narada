@@ -4,10 +4,11 @@ from core.permissions.models import PermissionRequest, ApprovalStatus
 from typing import Dict, Any, List
 
 class Executor:
-    def __init__(self, tool_registry: ToolRegistry, permission_engine: PermissionEngine = None, allowed_tools: List[str] = None):
+    def __init__(self, tool_registry: ToolRegistry, permission_engine: PermissionEngine = None, allowed_tools: List[str] = None, skill_registry = None):
         self.tool_registry = tool_registry
         self.permission_engine = permission_engine or PermissionEngine()
         self.allowed_tools = allowed_tools if allowed_tools is not None else []
+        self.skill_registry = skill_registry
         self.audit_log = []
 
     async def execute(self, action_name: str, approval_id: str = None, **kwargs) -> Any:
@@ -56,3 +57,9 @@ class Executor:
         except Exception as e:
             self.audit_log.append({"action": action_name, "status": "FAILED", "error": str(e)})
             return {"status": "FAILED", "error": str(e)}
+
+    def load_skill(self, skill_name: str) -> str:
+        """Loads a predefined procedural workflow constraint for the LLM"""
+        if not self.skill_registry:
+            raise ValueError("No SkillRegistry configured")
+        return self.skill_registry.get_prompt_for_skill(skill_name)
