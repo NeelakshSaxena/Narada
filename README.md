@@ -1095,3 +1095,4 @@ License information has not yet been defined.
 - **Phase 13 (Notification Gateway):** Completed. Multi-channel delivery gateway built to separate work execution from message delivery.
 - **Phase 14 (Away-Mode Notification Policy):** Completed. Spam-prevention policies and event deduplication engine implemented.
 - **Phase 15 (Sandbox Runtime):** Completed. Ephemeral execution boundary and sandbox manager implemented.
+- **Phase 16 (Coding Agent):** Completed. Coding Specialist workflow with sandbox integration and secure verification prompt implemented.
