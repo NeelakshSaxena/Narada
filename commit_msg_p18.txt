@@ -1,0 +1,8 @@
+feat: implement Phase 18 Autonomous Recovery
+
+Completes Phase 18 by adding robust failure handling logic for unattended runs.
+
+- Introduces `RecoveryManager` and `FailureContext` inside `core/runtime/recovery.py`.
+- Implements the Recovery Matrix dictating exactly how to respond to network timeouts, rate limits, and permission denials.
+- Enforces a critical safety rule: Never blindly retry consequential actions without reconciling state to guarantee idempotency.
+- Adds test coverage via `tests/runtime/test_recovery.py`.
