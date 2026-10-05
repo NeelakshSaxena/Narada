@@ -1099,3 +1099,4 @@ License information has not yet been defined.
 - **Phase 17 (Specialist Agents):** Completed. Specialist architecture and strict Delegation Contract implemented.
 - **Phase 18 (Autonomous Recovery):** Completed. Recovery Matrix, failure handling, and idempotency checks implemented.
 - **Phase 19 (Approval While User Is Away):** Completed. Asynchronous approval request system with safe state transitions and expirations built.
+- **Phase 20 (Session Model):** Completed. Distinct entities for Session/Run/Conversation defined, and Context Budget Policy implemented.
