@@ -4,9 +4,15 @@ import logging
 import time
 import uuid
 from fastapi import FastAPI, Request
+from fastapi.staticfiles import StaticFiles
 from core.runtime.runtime import NaradaCore
 
 app = FastAPI(title="Narada API", version="0.1.0")
+
+import os
+static_dir = os.path.join(os.path.dirname(__file__), "static")
+app.mount("/dashboard", StaticFiles(directory=static_dir, html=True), name="static")
+
 logger = logging.getLogger("narada")
 core = NaradaCore()
 
