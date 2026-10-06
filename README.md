@@ -1103,3 +1103,4 @@ License information has not yet been defined.
 - **Phase 21 (Model Routing):** Completed. Dynamic model router evaluating privacy, cost, and latency built.
 - **Phase 22 (Channel Gateway):** Completed. `ChannelProvider` abstraction and Capability Matrix implemented.
 - **Phase 23 (Webhook Gateway):** Completed. Secure webhook receiver with signature, timestamp, and replay validation implemented.
+- **Phase 24 ("Nārada While I Sleep"):** Completed. Core overnight autonomy loop (sleep/wake/reason/act) engineered.
