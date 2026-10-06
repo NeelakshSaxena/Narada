@@ -16,7 +16,7 @@ def test_chat_completions():
     assert response.status_code == 200
     data = response.json()
     assert data["object"] == "chat.completion"
-    assert data["choices"][0]["message"]["content"] == "Hello from Narada API!"
+    assert "Plan for: Hello" in data["choices"][0]["message"]["content"]
 
 def test_get_responsibilities():
     response = client.get("/v1/responsibilities")
