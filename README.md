@@ -1104,3 +1104,4 @@ License information has not yet been defined.
 - **Phase 22 (Channel Gateway):** Completed. `ChannelProvider` abstraction and Capability Matrix implemented.
 - **Phase 23 (Webhook Gateway):** Completed. Secure webhook receiver with signature, timestamp, and replay validation implemented.
 - **Phase 24 ("Nārada While I Sleep"):** Completed. Core overnight autonomy loop (sleep/wake/reason/act) engineered.
+- **Phase 25 (Daily Digest):** Completed. Structured state daily briefing generator implemented.
