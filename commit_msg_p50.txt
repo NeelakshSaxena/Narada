@@ -1,0 +1,8 @@
+feat: implement Phase 50 Circuit Breaker
+
+Completes Phase 50 by wrapping the agent execution loop in a strict resource boundary.
+
+- Adds `ResourceLimiter` and `CircuitBreakerTripped` to `core/agent/limiter.py`.
+- Modifies `AgentLoop` to increment the limiter on every cycle, trapping infinite loops.
+- Emits explicit "circuit_breaker" events into the executor audit log upon failure.
+- Fixes uncontrolled executions during unexpected LLM planner failure modes.
