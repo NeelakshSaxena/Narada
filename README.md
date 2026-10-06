@@ -1122,3 +1122,4 @@ License information has not yet been defined.
 - **Phase 40 (API Telemetry):** Completed. Injected HTTP middleware intercepting latency and access data, cementing foundational observability into canonical memory.
 - **Phase 41 (Responsibility Verification):** Completed. Formalized terminal states and cancellation propagation across asynchronous execution loops.
 - **Phase 42 (Background Worker Tuning):** Completed. Implemented dead-letter queues and retry limits, preventing endlessly looping failing tasks.
+- **Phase 43 (Long-Term Memory Hygiene):** Completed. Introduced maintenance jobs to safely detect contradictions and decay stale memories without blind overwrites.

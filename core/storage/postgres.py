@@ -19,6 +19,8 @@ class PostgresConnectionPool:
             self._db[args[0]] = {"data": args[1]}
         elif "INSERT INTO memory_canonical" in query:
             self._db[args[0]] = {"text": args[1], "metadata": args[2]}
+        elif "DELETE FROM memory_canonical" in query:
+            self._db.pop(args[0], None)
 
     async def fetchrow(self, query: str, *args) -> Optional[Dict[str, Any]]:
         if not self.connected:
@@ -75,6 +77,36 @@ class PostgresCanonicalMemoryStore:
             "text": row["text"],
             "metadata": json.loads(row["metadata"])
         }
+
+    async def upsert_memory(self, doc_id: str, text: str, metadata: Dict[str, Any], confidence: float = 1.0, source: str = "system"):
+        existing = await self.get_metadata(doc_id)
+        
+        if existing:
+            # Check for potential contradiction if text is substantially different
+            if existing["text"] != text:
+                import uuid
+                contradiction_id = f"contradiction-{uuid.uuid4()}"
+                contradiction_meta = {
+                    "type": "CONTRADICTION",
+                    "old_memory": existing["text"],
+                    "new_memory": text,
+                    "old_metadata": existing["metadata"],
+                    "new_metadata": metadata,
+                    "confidence": confidence,
+                    "source": source,
+                    "status": "UNRESOLVED",
+                    "target_doc_id": doc_id
+                }
+                await self.store_metadata(contradiction_id, "Memory Contradiction Detected", contradiction_meta)
+                # We do not overwrite blindly. 
+                return
+
+        await self.store_metadata(doc_id, text, metadata)
+
+    async def delete_metadata(self, doc_id: str):
+        query = "DELETE FROM memory_canonical WHERE id = $1"
+        await self.pool.execute(query, doc_id)
+
 
     async def get_all_metadata(self) -> List[Dict[str, Any]]:
         query = "SELECT * FROM memory_canonical"
