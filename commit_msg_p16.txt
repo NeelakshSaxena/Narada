@@ -1,8 +1,0 @@
-feat: implement Phase 16 Coding Agent
-
-Completes Phase 16 by introducing a safe delegation flow for coding tasks.
-
-- Adds `CodingSpecialist` abstraction in `core/specialists/coding.py`.
-- Connects the specialist to `SandboxManager` to isolate test execution and diff extraction.
-- Enforces a secure verification prompt that overrides the LLM and blocks `deployment_ready` status if security concerns are found, even if tests pass.
-- Verifies behavior through `tests/specialists/test_coding.py`.

@@ -1,8 +1,0 @@
-feat: implement Phase 20 Session Model
-
-Completes Phase 20 by enforcing isolated contexts for background execution runs.
-
-- Defines explicit models for `Conversation`, `Session`, and `Run` in `core/runtime/session.py`.
-- Builds `RunContextBuilder` which constructs a fresh prompt context dynamically, instead of dumping unbounded conversation history.
-- Implements the "Context Budget Policy" ensuring `SAFETY_AND_PERMISSIONS` guarantees are strictly prioritized over historical chat.
-- Adds test coverage in `tests/runtime/test_session.py`.

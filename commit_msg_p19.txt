@@ -1,8 +1,0 @@
-feat: implement Phase 19 Async Approvals
-
-Completes Phase 19 by building an approval mechanism that survives user absence.
-
-- Introduces `ApprovalManager` and `ApprovalRequest` in `core/permissions/approvals.py`.
-- Formally models the `ApprovalStatus` enum (`PENDING`, `GRANTED`, `DENIED`, `EXPIRED`).
-- Enforces an expiration policy on all approval requests to prevent stale execution authorization.
-- Fully tested the lifecycle logic via `tests/permissions/test_approvals.py`.
