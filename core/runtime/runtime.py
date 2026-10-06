@@ -55,5 +55,9 @@ class NaradaCore:
                 "db": db_status,
                 "redis": redis_status,
                 "api": "READY" if self.is_running else "OFFLINE"
+            },
+            "llm": {
+                "provider": self.agent.provider.__class__.__name__.replace("Provider", ""),
+                "model": getattr(self.agent.provider, "model", "unknown")
             }
         }
