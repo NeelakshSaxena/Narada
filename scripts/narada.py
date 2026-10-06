@@ -17,6 +17,18 @@ async def chat_repl():
                 if user_input.strip().lower() in ["exit", "quit"]:
                     break
                 
+                if user_input.strip().lower() == "/audit":
+                    response = await client.get("http://localhost:8000/v1/audit", timeout=60.0)
+                    if response.status_code == 200:
+                        data = response.json()
+                        print("Narada> Audit Trail:")
+                        for log in data.get("audit", []):
+                            meta = log.get("metadata", {})
+                            print(f" - [Resp:{meta.get('responsibility_id')}|Task:{meta.get('task_id')}] Tool:{meta.get('tool')} Action:{meta.get('action')} | Result: {log.get('text')}")
+                    else:
+                        print(f"Error fetching audit trail: {response.status_code}")
+                    continue
+
                 if user_input.strip().lower() == "/memory":
                     response = await client.get("http://localhost:8000/v1/memory", timeout=60.0)
                     if response.status_code == 200:

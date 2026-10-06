@@ -1124,3 +1124,4 @@ License information has not yet been defined.
 - **Phase 42 (Background Worker Tuning):** Completed. Implemented dead-letter queues and retry limits, preventing endlessly looping failing tasks.
 - **Phase 43 (Long-Term Memory Hygiene):** Completed. Introduced maintenance jobs to safely detect contradictions and decay stale memories without blind overwrites.
 - **Phase 44 (User-Controlled Memory):** Completed. Exposed REST endpoints and `/forget` CLI commands to physically wipe persistent canonical memory.
+- **Phase 45 (Audit Explorer):** Completed. Structured background activity via explicit `/audit` trail records in canonical memory, accessible from REST and CLI.
