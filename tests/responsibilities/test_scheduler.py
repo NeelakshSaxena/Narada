@@ -53,3 +53,36 @@ def test_scheduler_execution_context():
     # State should be updated
     assert resp.memory_state["last_result"] == "New commit xyz found."
     assert resp.is_due() is False
+
+def test_cancellation_propagation():
+    from core.responsibilities.models import ResponsibilityStatus
+    
+    scheduler = ResponsibilityScheduler(skill_registry=SkillRegistry(), tool_registry=ToolRegistry())
+    resp = Responsibility(goal="Long running")
+    resp.status = ResponsibilityStatus.ACTIVE
+    scheduler.add_responsibility(resp)
+    
+    async def mock_llm_call(prompt: str) -> str:
+        await asyncio.sleep(0.5)
+        return "Finished"
+
+    async def run_test():
+        scheduler.start(mock_llm_call)
+        
+        # Give it a moment to start the task
+        await asyncio.sleep(0.1)
+        assert resp.id in scheduler._running_tasks
+        
+        # Cancel the responsibility
+        resp.cancel()
+        
+        # Wait a moment for the loop to notice and cancel the task
+        await asyncio.sleep(0.2)
+        
+        # The task should be cancelled and removed from running tasks
+        assert resp.id not in scheduler._running_tasks
+        assert resp.memory_state.get("last_result") == "Cancelled"
+        
+        scheduler.stop()
+
+    asyncio.run(run_test())

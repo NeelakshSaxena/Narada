@@ -12,6 +12,7 @@ class ResponsibilityScheduler:
         self.tool_registry = tool_registry
         self._running = False
         self._task = None
+        self._running_tasks: dict[str, asyncio.Task] = {}
 
     def add_responsibility(self, resp: Responsibility):
         self.responsibilities.append(resp)
@@ -47,7 +48,6 @@ class ResponsibilityScheduler:
         """
         Creates a fresh execution context and runs the agent loop.
         """
-        # Create a fresh executor for isolated session state
         fresh_executor = Executor(
             tool_registry=self.tool_registry, 
             skill_registry=self.skill_registry, 
@@ -55,20 +55,35 @@ class ResponsibilityScheduler:
         )
         
         prompt = self.generate_self_contained_prompt(resp)
-        
-        # In a full system, this invokes the LLM. Here we simulate the LLM call.
         result = await llm_callback(prompt)
-        
-        # Update memory state (in reality, parsed from LLM JSON output)
         resp.memory_state["last_result"] = result
         resp.mark_executed()
+
+    def _start_execution(self, resp: Responsibility, llm_callback: Callable[[str], Awaitable[str]]):
+        if resp.id in self._running_tasks:
+            return
+            
+        async def run_and_cleanup():
+            try:
+                await self.execute_responsibility(resp, llm_callback)
+            except asyncio.CancelledError:
+                resp.memory_state["last_result"] = "Cancelled"
+            finally:
+                if resp.id in self._running_tasks:
+                    del self._running_tasks[resp.id]
+                    
+        self._running_tasks[resp.id] = asyncio.create_task(run_and_cleanup())
 
     async def _loop(self, llm_callback: Callable[[str], Awaitable[str]]):
         while self._running:
             for resp in self.responsibilities:
+                # Propagate cancellation if task is running and resp is cancelled
+                if resp.status.name in ["CANCELLED", "STOPPED", "PAUSED"] and resp.id in self._running_tasks:
+                    self._running_tasks[resp.id].cancel()
+
                 if resp.is_due():
-                    await self.execute_responsibility(resp, llm_callback)
-            await asyncio.sleep(1) # simple poll
+                    self._start_execution(resp, llm_callback)
+            await asyncio.sleep(0.1)
 
     def start(self, llm_callback: Callable[[str], Awaitable[str]]):
         self._running = True
