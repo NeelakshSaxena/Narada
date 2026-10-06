@@ -99,6 +99,7 @@ def main():
     
     chat_parser = subparsers.add_parser("chat", help="Start an interactive chat session")
     health_parser = subparsers.add_parser("health", help="Check system health")
+    setup_parser = subparsers.add_parser("setup", help="Run the Nārada onboarding setup")
     
     args = parser.parse_args()
     
@@ -110,6 +111,9 @@ def main():
         app.run()
     elif args.command == "health":
         asyncio.run(health_check_cmd())
+    elif args.command == "setup":
+        from apps.terminal.setup import run_setup
+        run_setup()
 
 if __name__ == "__main__":
     main()
