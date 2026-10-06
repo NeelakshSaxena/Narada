@@ -75,3 +75,18 @@ class PostgresCanonicalMemoryStore:
             "text": row["text"],
             "metadata": json.loads(row["metadata"])
         }
+
+    async def get_all_metadata(self) -> List[Dict[str, Any]]:
+        query = "SELECT * FROM memory_canonical"
+        rows = await self.pool.fetch(query)
+        res = []
+        for r in rows:
+            meta = r.get("metadata")
+            if isinstance(meta, str):
+                meta = json.loads(meta)
+            res.append({
+                "id": r["id"],
+                "text": r.get("text"),
+                "metadata": meta
+            })
+        return res

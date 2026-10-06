@@ -17,6 +17,17 @@ async def chat_repl():
                 if user_input.strip().lower() in ["exit", "quit"]:
                     break
                 
+                if user_input.strip().lower() == "/memory":
+                    response = await client.get("http://localhost:8000/v1/memory", timeout=60.0)
+                    if response.status_code == 200:
+                        data = response.json()
+                        print(f"Narada> Memory Log:")
+                        for mem in data.get("memory", []):
+                            print(f" - [{mem.get('id')}] {mem.get('metadata', {}).get('task')}: {mem.get('text')}")
+                    else:
+                        print(f"Error fetching memory: {response.status_code}")
+                    continue
+                
                 payload = {
                     "messages": [{"role": "user", "content": user_input}],
                     "model": "narada"

@@ -1118,3 +1118,4 @@ License information has not yet been defined.
 - **Phase 36 (Task Worker):** Completed. Asynchronous background worker established to drain Redis queues and log completion records into PostgreSQL memory stores.
 - **Phase 37 (Scheduler Init):** Completed. Baseline job scheduler implemented to orchestrate recurring routines and publish wake-events into Redis.
 - **Phase 38 (Background Responsibility API):** Completed. Bootstrapped API endpoint bindings mapping user requests to local scheduler cycles.
+- **Phase 39 (Responsibility Memory):** Completed. Expanded CLI to natively query `CanonicalMemoryStore` revealing offline background worker history.
