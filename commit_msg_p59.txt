@@ -1,0 +1,7 @@
+feat: implement Phase 59 Provider Circuit Breaker
+
+Completes Phase 59 by protecting provider integrations using a formal Circuit Breaker state machine.
+
+- Writes `ProviderCircuitBreaker` implementing strict CLOSED, OPEN, and HALF_OPEN transition handling within `core/providers/circuit_breaker.py`.
+- Evaluates dynamic timing constraints utilizing configurable failure thresholds and cooldown windows to determine `can_execute()`.
+- Delivers thorough logic validation inside `tests/providers/test_circuit_breaker.py`.
