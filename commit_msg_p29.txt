@@ -1,0 +1,8 @@
+feat: implement Phase 29 Redis
+
+Completes Phase 29 by introducing Redis for multi-worker capabilities.
+
+- Creates `core/events/redis_bus.py` with `RedisEventBus` and `RedisCoordinator`.
+- Replaces in-memory queuing logic with a durable PUB/SUB mock interface capable of driving a true multi-worker layout.
+- Protects scheduled jobs from duplicate execution via `acquire_lock` (SETNX).
+- Asserts correctness via comprehensive tests in `tests/events/test_redis.py`.
