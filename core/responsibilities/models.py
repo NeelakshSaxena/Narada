@@ -11,6 +11,10 @@ class ResponsibilityStatus(Enum):
     COMPLETED = "COMPLETED"
     ERROR = "ERROR"
     RECOVERY = "RECOVERY"
+    CANCELLED = "CANCELLED"
+    STOPPED = "STOPPED"
+    DISABLED = "DISABLED"
+    ARCHIVED = "ARCHIVED"
 
 @dataclass
 class Responsibility:
@@ -35,11 +39,26 @@ class Responsibility:
 
     def transition_to(self, new_status: ResponsibilityStatus):
         # State machine bounds
-        if self.status == ResponsibilityStatus.COMPLETED:
-            raise ValueError("Cannot transition out of COMPLETED state.")
+        if self.status in [ResponsibilityStatus.COMPLETED, ResponsibilityStatus.CANCELLED, ResponsibilityStatus.STOPPED, ResponsibilityStatus.ARCHIVED]:
+            raise ValueError(f"Cannot transition out of {self.status.name} state.")
         if new_status == ResponsibilityStatus.RECOVERY and self.status != ResponsibilityStatus.ERROR:
             raise ValueError("Can only enter RECOVERY from ERROR state.")
         self.status = new_status
+
+    def pause(self):
+        self.transition_to(ResponsibilityStatus.PAUSED)
+        
+    def cancel(self):
+        self.transition_to(ResponsibilityStatus.CANCELLED)
+
+    def stop(self):
+        self.transition_to(ResponsibilityStatus.STOPPED)
+
+    def disable(self):
+        self.transition_to(ResponsibilityStatus.DISABLED)
+
+    def archive(self):
+        self.transition_to(ResponsibilityStatus.ARCHIVED)
 
     def mark_executed(self, success: bool = True):
         now = datetime.utcnow()

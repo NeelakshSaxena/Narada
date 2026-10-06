@@ -34,3 +34,36 @@ def test_completed_state_locked():
     resp.transition_to(ResponsibilityStatus.COMPLETED)
     with pytest.raises(ValueError):
         resp.transition_to(ResponsibilityStatus.ACTIVE)
+
+def test_terminal_states_locked():
+    for state in [ResponsibilityStatus.COMPLETED, ResponsibilityStatus.CANCELLED, ResponsibilityStatus.STOPPED, ResponsibilityStatus.ARCHIVED]:
+        resp = Responsibility()
+        resp.transition_to(state)
+        with pytest.raises(ValueError):
+            resp.transition_to(ResponsibilityStatus.ACTIVE)
+
+def test_pause_semantics():
+    resp = Responsibility()
+    resp.transition_to(ResponsibilityStatus.ACTIVE)
+    assert resp.is_due() is True
+    
+    resp.pause()
+    assert resp.status == ResponsibilityStatus.PAUSED
+    assert resp.is_due() is False
+
+def test_lifecycle_methods():
+    resp = Responsibility()
+    resp.cancel()
+    assert resp.status == ResponsibilityStatus.CANCELLED
+
+    resp = Responsibility()
+    resp.stop()
+    assert resp.status == ResponsibilityStatus.STOPPED
+
+    resp = Responsibility()
+    resp.disable()
+    assert resp.status == ResponsibilityStatus.DISABLED
+
+    resp = Responsibility()
+    resp.archive()
+    assert resp.status == ResponsibilityStatus.ARCHIVED
