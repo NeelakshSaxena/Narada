@@ -1121,3 +1121,4 @@ License information has not yet been defined.
 - **Phase 39 (Responsibility Memory):** Completed. Expanded CLI to natively query `CanonicalMemoryStore` revealing offline background worker history.
 - **Phase 40 (API Telemetry):** Completed. Injected HTTP middleware intercepting latency and access data, cementing foundational observability into canonical memory.
 - **Phase 41 (Responsibility Verification):** Completed. Formalized terminal states and cancellation propagation across asynchronous execution loops.
+- **Phase 42 (Background Worker Tuning):** Completed. Implemented dead-letter queues and retry limits, preventing endlessly looping failing tasks.
