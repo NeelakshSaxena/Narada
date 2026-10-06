@@ -43,12 +43,25 @@ async def chat_completions(req: ChatRequest):
         }]
     }
 
+@app.on_event("startup")
+async def startup_event():
+    await core.boot()
+
+class ResponsibilityRequest(BaseModel):
+    task: str
+    interval: int = 1
+
 @app.get("/v1/responsibilities")
 async def get_responsibilities():
     """
     Endpoint to fetch active responsibilities.
     """
     return {"responsibilities": []}
+
+@app.post("/v1/responsibilities")
+async def create_responsibility(req: ResponsibilityRequest):
+    job_id = await core.scheduler.schedule_job(req.task, "interval", interval=req.interval)
+    return {"status": "created", "job_id": job_id}
 
 if __name__ == "__main__":
     import uvicorn

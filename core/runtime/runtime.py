@@ -14,10 +14,19 @@ class AgentRuntime:
         response = await self.provider.generate(prompt)
         return response.text
 
+from core.scheduler.scheduler import LocalScheduler
+from core.events.redis_bus import RedisMock
+
 class NaradaCore:
     def __init__(self):
         self.agent = AgentRuntime()
+        self.redis = RedisMock()
+        self.scheduler = LocalScheduler(self.redis)
+        self.is_running = False
+        
+    async def boot(self):
         self.is_running = True
+        await self.scheduler.start()
         
     def get_status(self):
         return {"status": "ok", "running": self.is_running}
