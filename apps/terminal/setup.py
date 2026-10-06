@@ -43,7 +43,7 @@ def run_setup():
     user_name = Prompt.ask("[bold]What should I call you?[/bold]")
     
     clear()
-    console.print(f"Nice to meet you, [bold #4a6fa5]{user_name}[/bold].\n")
+    console.print(f"Nice to meet you, [bold #4a6fa5]{user_name}[/].\n")
     
     # Mental model
     Prompt.ask("\n[dim]Press Enter to continue[/dim]", default="", show_default=False)
