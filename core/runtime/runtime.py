@@ -35,5 +35,25 @@ class NaradaCore:
         await self.pool.connect()
         await self.scheduler.start()
         
-    def get_status(self):
-        return {"status": "ok", "running": self.is_running}
+    async def get_status(self):
+        # Check DB
+        db_status = "OFFLINE"
+        if getattr(self.pool, "connected", False):
+            db_status = "READY"
+            
+        # Check Redis (mock)
+        redis_status = "READY" if self.redis else "OFFLINE"
+        
+        status = "READY" if (db_status == "READY" and redis_status == "READY" and self.is_running) else "DEGRADED"
+        if not self.is_running:
+            status = "OFFLINE"
+            
+        return {
+            "status": status,
+            "running": self.is_running,
+            "components": {
+                "db": db_status,
+                "redis": redis_status,
+                "api": "READY" if self.is_running else "OFFLINE"
+            }
+        }
