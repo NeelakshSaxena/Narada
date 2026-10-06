@@ -1130,3 +1130,4 @@ License information has not yet been defined.
 - **Phase 48 (Permission Policy Injector):** Completed. Added `PolicyInjector` to dynamically embed `.agents/AGENTS.md` context constraints into the agent's core working memory block.
 - **Phase 49 (System Health Dashboard CLI):** Completed. Added internal dependency checks (DB, Redis) and a `narada health` CLI diagnostic command.
 - **Phase 50 (Resource Limiter & Circuit Breaker):** Completed. Guardrailed agent loops with an auditing circuit breaker to catch infinite loops and constrain token spend.
+- **Phase 51 (Web Dashboard):** Completed. Implemented a control plane UI tracking real-time status and telemetry mounted onto the FastAPI service.

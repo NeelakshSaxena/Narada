@@ -66,3 +66,10 @@ def test_get_audit_trail():
         data = response.json()
         assert "audit" in data
         assert isinstance(data["audit"], list)
+
+def test_dashboard():
+    with TestClient(app) as test_client:
+        response = test_client.get("/dashboard/")
+        assert response.status_code == 200
+        assert "text/html" in response.headers.get("content-type", "")
+        assert b"N\xc4\x81rada Web Dashboard" in response.content or b"Narada Web Dashboard" in response.content or b"Web Dashboard" in response.content

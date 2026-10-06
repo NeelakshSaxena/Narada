@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nārada Web Dashboard</title>
+    <style>
+        body { font-family: 'Inter', sans-serif; margin: 0; background-color: #121212; color: #e0e0e0; display: flex; height: 100vh; overflow: hidden; }
+        .sidebar { width: 250px; background-color: #1e1e1e; padding: 20px 0; border-right: 1px solid #333; overflow-y: auto; }
+        .sidebar h2 { color: #fff; padding: 0 20px; font-size: 1.2rem; }
+        .nav-link { display: block; padding: 10px 20px; color: #b0b0b0; text-decoration: none; transition: background 0.2s; cursor: pointer; }
+        .nav-link:hover, .nav-link.active { background-color: #2a2a2a; color: #fff; }
+        .content { flex: 1; padding: 30px; overflow-y: auto; }
+        .card { background-color: #1e1e1e; border: 1px solid #333; border-radius: 8px; padding: 20px; margin-bottom: 20px; }
+        .card h3 { margin-top: 0; }
+        .data-list { list-style: none; padding: 0; }
+        .data-item { padding: 10px; border-bottom: 1px solid #333; }
+        .data-item:last-child { border-bottom: none; }
+        .status-badge { padding: 4px 8px; border-radius: 12px; font-size: 0.8rem; font-weight: bold; }
+        .status-ready { background-color: #1e4620; color: #4ade80; }
+        .status-degraded { background-color: #5c4000; color: #fbbf24; }
+        .status-offline { background-color: #4a1515; color: #f87171; }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Nārada Control</h2>
+        <div id="nav-container"></div>
+    </div>
+    <div class="content" id="main-content">
+        <!-- Content injected here -->
+    </div>
+
+    <script>
+        const sections = [
+            "Overview", "Responsibilities", "Tasks", "Runs", "Memory", 
+            "Approvals", "Tools", "Skills", "Channels", "Events", 
+            "Audit", "Costs", "Providers", "System"
+        ];
+
+        const navContainer = document.getElementById('nav-container');
+        const mainContent = document.getElementById('main-content');
+
+        sections.forEach((sec, idx) => {
+            const el = document.createElement('a');
+            el.className = 'nav-link' + (idx === 0 ? ' active' : '');
+            el.innerText = sec;
+            el.onclick = () => loadSection(sec, el);
+            navContainer.appendChild(el);
+        });
+
+        async function loadSection(sec, navElement) {
+            document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+            if (navElement) navElement.classList.add('active');
+
+            mainContent.innerHTML = `<h2>${sec}</h2><div class="card"><p>Loading ${sec.toLowerCase()} data...</p></div>`;
+
+            if (sec === "System" || sec === "Overview") {
+                try {
+                    const res = await fetch('/health');
+                    const data = await res.json();
+                    let badgeClass = data.status === 'READY' ? 'status-ready' : (data.status === 'DEGRADED' ? 'status-degraded' : 'status-offline');
+                    
+                    let html = `<h3>Health Status <span class="status-badge ${badgeClass}">${data.status}</span></h3>`;
+                    html += `<ul class="data-list">`;
+                    html += `<li class="data-item">Agent Running: ${data.running}</li>`;
+                    for (const [comp, status] of Object.entries(data.components || {})) {
+                        let cBadge = status === 'READY' ? 'status-ready' : 'status-offline';
+                        html += `<li class="data-item">${comp.toUpperCase()}: <span class="status-badge ${cBadge}">${status}</span></li>`;
+                    }
+                    html += `</ul>`;
+                    mainContent.innerHTML = `<h2>${sec}</h2><div class="card">${html}</div>`;
+                } catch (e) {
+                    mainContent.innerHTML = `<h2>${sec}</h2><div class="card"><p style="color:red;">Error fetching data: ${e}</p></div>`;
+                }
+            } else if (sec === "Audit") {
+                try {
+                    const res = await fetch('/v1/audit');
+                    const data = await res.json();
+                    let html = `<ul class="data-list">`;
+                    (data.audit || []).forEach(log => {
+                        const meta = log.metadata || {};
+                        html += `<li class="data-item"><strong>[${meta.action || 'Event'}]</strong> ${log.text || ''}</li>`;
+                    });
+                    html += `</ul>`;
+                    mainContent.innerHTML = `<h2>${sec}</h2><div class="card">${html}</div>`;
+                } catch (e) {
+                    mainContent.innerHTML = `<h2>${sec}</h2><div class="card"><p style="color:red;">Error fetching data: ${e}</p></div>`;
+                }
+            } else if (sec === "Memory") {
+                try {
+                    const res = await fetch('/v1/memory');
+                    const data = await res.json();
+                    let html = `<ul class="data-list">`;
+                    (data.memory || []).forEach(mem => {
+                        html += `<li class="data-item"><strong>[${mem.id}]</strong> ${mem.text || ''}</li>`;
+                    });
+                    html += `</ul>`;
+                    mainContent.innerHTML = `<h2>${sec}</h2><div class="card">${html}</div>`;
+                } catch (e) {
+                    mainContent.innerHTML = `<h2>${sec}</h2><div class="card"><p style="color:red;">Error fetching data: ${e}</p></div>`;
+                }
+            } else {
+                mainContent.innerHTML = `<h2>${sec}</h2><div class="card"><p>${sec} plane is under construction.</p></div>`;
+            }
+        }
+
+        // Load default
+        loadSection("Overview");
+    </script>
+</body>
+</html>

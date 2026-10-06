@@ -1,0 +1,8 @@
+feat: implement Phase 51 Web Dashboard
+
+Completes Phase 51 by adding a static web dashboard for runtime monitoring.
+
+- Creates `apps/api/static/index.html` featuring a vanilla JS single-page interface for control plane metrics.
+- Updates `apps/api/main.py` to serve static assets at `/dashboard`.
+- Implements dashboard client fetching for Health, Memory, and Audit views.
+- Adds pytest integration tests for static file routing.
