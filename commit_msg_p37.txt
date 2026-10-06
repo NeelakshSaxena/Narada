@@ -1,0 +1,8 @@
+feat: implement Phase 37 Scheduler Init
+
+Completes Phase 37 by rolling out the fundamental scheduler mechanics.
+
+- Introduces `LocalScheduler` in `core/scheduler/scheduler.py` building upon the `SchedulerProvider` abstraction.
+- Wires the scheduler loop to actively publish intervals into `RedisMock`.
+- Defines job add/cancel mechanics to manage state.
+- Validates queue interaction effectively bridging Phase 36 task workers via `test_scheduler_loop`.
