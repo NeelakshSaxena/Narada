@@ -1139,3 +1139,4 @@ License information has not yet been defined.
 - **Phase 57 (Project Status Prompt):** Completed. Implemented `ProjectStatusPrompt` to recursively serialize deep project states into LLM-friendly contextual summaries.
 - **Phase 58 (External Service Health):** Completed. Authored `ProviderHealthTracker` recording success/failure counts and managing time-based API backoff windows.
 - **Phase 59 (Provider Circuit Breaker):** Completed. Built `ProviderCircuitBreaker` enabling `CLOSED -> OPEN -> HALF_OPEN` transitions to enforce API protection.
+- **Phase 60 (Cost Safety):** Completed. Introduced `BudgetTracker` enforcing strict thresholds across runtime duration, API spend, and model/tool call volume to guarantee safe autonomy.
