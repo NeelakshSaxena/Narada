@@ -105,7 +105,9 @@ def main():
     if args.command == "start":
         start_server(args.host, args.port)
     elif args.command == "chat":
-        asyncio.run(chat_repl())
+        from apps.terminal.app import NaradaTerminalUI
+        app = NaradaTerminalUI()
+        app.run()
     elif args.command == "health":
         asyncio.run(health_check_cmd())
 
