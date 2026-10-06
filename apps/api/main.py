@@ -22,8 +22,13 @@ async def health_check():
 @app.post("/v1/chat/completions")
 async def chat_completions(req: ChatRequest):
     """
-    OpenAI-compatible chat completions endpoint.
+    OpenAI-compatible chat completions endpoint for Open WebUI.
     """
+    last_message = req.messages[-1].content if req.messages else ""
+    
+    # Process through AgentExecutor (Goal -> Plan -> Execute)
+    final_observation = await core.agent.execute_task(last_message)
+    
     return {
         "id": "chatcmpl-123",
         "object": "chat.completion",
@@ -32,7 +37,7 @@ async def chat_completions(req: ChatRequest):
             "index": 0,
             "message": {
                 "role": "assistant",
-                "content": "Hello from Narada API!"
+                "content": final_observation
             },
             "finish_reason": "stop"
         }]
