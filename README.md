@@ -1144,6 +1144,7 @@ License information has not yet been defined.
 - [x] **Phase 62 (System Integration Testing):** Completed. Structured an end-to-end integration demo within `test_narada_demo.py` verifying stateful autonomous event loops.
 - [x] **Phase 63 (V1 Release Tagging):** Completed. Finalized documentation, applied `v1.0.0` version markers, and concluded the foundational agentic build-out sequence.
 - [x] **Phase 64 (Mascot Terminal UI):** Completed. Implemented the Nārada terminal interface as an interactive Textual application featuring an animated ASCII mascot representing agent runtime states.
+- [x] **Phase 65 (Terminal UI Formatting & Polish):** Completed. Refactored terminal presentation layer to properly render Rich markup, established a clean structural hierarchy, and dynamically surfaced the active LLM provider/model configuration.
 
 ---
 **Build Pipeline Complete — V1.0.0**
