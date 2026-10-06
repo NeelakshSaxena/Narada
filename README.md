@@ -1137,3 +1137,4 @@ License information has not yet been defined.
 - **Phase 55 (Dependency Graph):** Completed. Structured `TaskGraph` to yield safe, cycle-checked topological task execution sequences for complex nested responsibilities.
 - **Phase 56 (Long-Running Projects):** Completed. Implemented hierarchical structures `Project -> Responsibility -> Goal -> Task` mapping recursive state propagation to structure complex endeavors.
 - **Phase 57 (Project Status Prompt):** Completed. Implemented `ProjectStatusPrompt` to recursively serialize deep project states into LLM-friendly contextual summaries.
+- **Phase 58 (External Service Health):** Completed. Authored `ProviderHealthTracker` recording success/failure counts and managing time-based API backoff windows.
