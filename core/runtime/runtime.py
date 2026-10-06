@@ -8,3 +8,11 @@ class AgentRuntime:
         
     def execute_task(self, task):
         pass
+
+class NaradaCore:
+    def __init__(self):
+        self.agent = AgentRuntime()
+        self.is_running = True
+        
+    def get_status(self):
+        return {"status": "ok", "running": self.is_running}

@@ -1,16 +1,49 @@
 from fastapi import FastAPI
+from pydantic import BaseModel
 import logging
+from core.runtime.runtime import NaradaCore
 
 app = FastAPI(title="Narada API", version="0.1.0")
 logger = logging.getLogger("narada")
+core = NaradaCore()
+
+class ChatMessage(BaseModel):
+    role: str
+    content: str
+
+class ChatRequest(BaseModel):
+    messages: list[ChatMessage]
+    model: str = "narada"
 
 @app.get("/health")
 async def health_check():
+    return core.get_status()
+
+@app.post("/v1/chat/completions")
+async def chat_completions(req: ChatRequest):
     """
-    Returns a healthy state. 
-    Required for container orchestration and Phase 1 verification.
+    OpenAI-compatible chat completions endpoint.
     """
-    return {"status": "ok", "service": "narada-core"}
+    return {
+        "id": "chatcmpl-123",
+        "object": "chat.completion",
+        "model": req.model,
+        "choices": [{
+            "index": 0,
+            "message": {
+                "role": "assistant",
+                "content": "Hello from Narada API!"
+            },
+            "finish_reason": "stop"
+        }]
+    }
+
+@app.get("/v1/responsibilities")
+async def get_responsibilities():
+    """
+    Endpoint to fetch active responsibilities.
+    """
+    return {"responsibilities": []}
 
 if __name__ == "__main__":
     import uvicorn
