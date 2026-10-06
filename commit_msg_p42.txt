@@ -1,0 +1,9 @@
+feat: implement Phase 42 Background Worker Tuning
+
+Completes Phase 42 by hardening the task worker with retries and dead-lettering.
+
+- Enhances `TaskWorker` to track task attempts in Redis.
+- Aborts loops after 3 consecutive failures, transitioning to a `FAILED_PERMANENT` DLQ entry.
+- Stores error reasons and attempt counts dynamically in `CanonicalMemoryStore`.
+- Secures `RedisCoordinator` locks with reliable `finally` release blocks.
+- Adds comprehensive unit tests validating retry counts and final DLQ persistence.

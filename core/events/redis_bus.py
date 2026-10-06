@@ -24,6 +24,12 @@ class RedisMock:
     async def delete(self, key: str):
         self.locks.pop(key, None)
 
+    async def get(self, key: str) -> str:
+        return self.locks.get(key)
+        
+    async def set(self, key: str, value: str):
+        self.locks[key] = value
+
 
 class RedisSubscriberMock:
     def __init__(self, client: RedisMock, channel: str):
