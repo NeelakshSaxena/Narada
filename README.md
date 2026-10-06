@@ -1129,3 +1129,4 @@ License information has not yet been defined.
 - **Phase 47 (Email/Messaging Dispatch Scaffold):** Completed. Defined `MessageProvider` abstraction and mock implementation for dispatching offline user alerts.
 - **Phase 48 (Permission Policy Injector):** Completed. Added `PolicyInjector` to dynamically embed `.agents/AGENTS.md` context constraints into the agent's core working memory block.
 - **Phase 49 (System Health Dashboard CLI):** Completed. Added internal dependency checks (DB, Redis) and a `narada health` CLI diagnostic command.
+- **Phase 50 (Resource Limiter & Circuit Breaker):** Completed. Guardrailed agent loops with an auditing circuit breaker to catch infinite loops and constrain token spend.
