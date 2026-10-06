@@ -1,0 +1,7 @@
+feat: implement Phase 48 Policy Injector
+
+Completes Phase 48 by hooking dynamic policy parsing into the runtime loop.
+
+- Introduces `PolicyInjector` in `core/agent/policy.py`.
+- Updates `AgentRuntime` to inject user guidelines from `.agents/AGENTS.md` into prompts.
+- Ensures the agent is contextually aware of constraints and behavioral boundaries dynamically.
