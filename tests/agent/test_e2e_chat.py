@@ -16,6 +16,11 @@ class AsyncMockResponse:
         return self.json_data
 
 def test_e2e_chat_completions():
+    from apps.api.main import core
+    core.pool.connected = True
+    async def mock_execute(*args, **kwargs): pass
+    core.pool.execute = mock_execute
+    
     client = TestClient(app)
     
     mock_data = {

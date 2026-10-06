@@ -56,25 +56,27 @@ class ScriptedLLMProvider(LLMProvider):
     async def stream(self, prompt: str, **kwargs):
         pass
 
-@pytest.mark.asyncio
-async def test_agent_loop_deterministic_completion():
-    registry = ToolRegistry()
-    registry.register(DummyTool())
-    
-    executor = Executor(tool_registry=registry, allowed_tools=["dummy_action"])
-    llm = ScriptedLLMProvider()
-    
-    loop = AgentLoop(llm_provider=llm, executor=executor)
-    
-    state = AgentState(run_id=str(uuid.uuid4()), goal="Test Goal")
-    
-    assert state.status == AgentStatus.RUNNING
-    
-    final_state = await loop.run(state)
-    
-    assert final_state.status == AgentStatus.COMPLETED
-    assert len(final_state.plan) > 0
-    assert len(final_state.actions) == 1
-    assert final_state.actions[0]["name"] == "dummy_action"
-    assert final_state.observations[0]["result"] == "Success"
-    assert final_state.decision == "COMPLETE"
+def test_agent_loop_deterministic_completion():
+    async def run_test():
+        registry = ToolRegistry()
+        registry.register(DummyTool())
+        
+        executor = Executor(tool_registry=registry, allowed_tools=["dummy_action"])
+        llm = ScriptedLLMProvider()
+        
+        loop = AgentLoop(llm_provider=llm, executor=executor)
+        
+        state = AgentState(run_id=str(uuid.uuid4()), goal="Test Goal")
+        
+        assert state.status == AgentStatus.RUNNING
+        
+        final_state = await loop.run(state)
+        
+        assert final_state.status == AgentStatus.COMPLETED
+        assert len(final_state.plan) > 0
+        assert len(final_state.actions) == 1
+        assert final_state.actions[0]["name"] == "dummy_action"
+        assert final_state.observations[0]["result"] == "Success"
+        assert final_state.decision == "COMPLETE"
+    import asyncio
+    asyncio.run(run_test())

@@ -29,24 +29,26 @@ class MockResearchLLM(LLMProvider):
     async def stream(self, prompt: str, **kwargs):
         pass
 
-@pytest.mark.asyncio
-async def test_web_researcher_pipeline():
-    registry = ToolRegistry()
-    registry.register(WebSearchTool())
-    registry.register(WebOpenTool())
-    
-    engine = PermissionEngine()
-    executor = Executor(tool_registry=registry, permission_engine=engine, allowed_tools=["web.search", "web.open"])
-    
-    llm = MockResearchLLM()
-    researcher = WebResearcher(llm_provider=llm, executor=executor)
-    
-    summary = await researcher.research("What is the population of Paris?")
-    
-    assert "Summary: Paris has 2.16M people." in summary
-    
-    # Audit log should reflect the search and open tool usage
-    actions = [log["action"] for log in executor.audit_log]
-    assert "web.search" in actions
-    assert "web.open" in actions
-    assert len(executor.audit_log) == 2
+def test_web_researcher_pipeline():
+    async def run_test():
+        registry = ToolRegistry()
+        registry.register(WebSearchTool())
+        registry.register(WebOpenTool())
+        
+        engine = PermissionEngine()
+        executor = Executor(tool_registry=registry, permission_engine=engine, allowed_tools=["web.search", "web.open"])
+        
+        llm = MockResearchLLM()
+        researcher = WebResearcher(llm_provider=llm, executor=executor)
+        
+        summary = await researcher.research("What is the population of Paris?")
+        
+        assert "Summary: Paris has 2.16M people." in summary
+        
+        # Audit log should reflect the search and open tool usage
+        actions = [log["action"] for log in executor.audit_log]
+        assert "web.search" in actions
+        assert "web.open" in actions
+        assert len(executor.audit_log) == 2
+    import asyncio
+    asyncio.run(run_test())

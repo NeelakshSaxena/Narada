@@ -1,4 +1,5 @@
 from providers.llm.ollama import OllamaProvider
+from core.agent.policy import PolicyInjector
 
 class AgentRuntime:
     """
@@ -7,10 +8,12 @@ class AgentRuntime:
     def __init__(self):
         self.is_running = False
         self.provider = OllamaProvider()
+        self.policy_injector = PolicyInjector()
         
     async def execute_task(self, task: str) -> str:
         # Simple Agent Loop using actual provider
-        prompt = f"Goal: {task}\nPlan the steps and output the execution result."
+        base_prompt = f"Goal: {task}\nPlan the steps and output the execution result."
+        prompt = self.policy_injector.inject(base_prompt)
         response = await self.provider.generate(prompt)
         return response.text
 

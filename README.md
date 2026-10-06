@@ -1127,3 +1127,4 @@ License information has not yet been defined.
 - **Phase 45 (Audit Explorer):** Completed. Structured background activity via explicit `/audit` trail records in canonical memory, accessible from REST and CLI.
 - **Phase 46 (Security Review Gate):** Completed. Codified core execution invariants (sandbox isolation, required human approval, secret protection) into a formal security test suite.
 - **Phase 47 (Email/Messaging Dispatch Scaffold):** Completed. Defined `MessageProvider` abstraction and mock implementation for dispatching offline user alerts.
+- **Phase 48 (Permission Policy Injector):** Completed. Added `PolicyInjector` to dynamically embed `.agents/AGENTS.md` context constraints into the agent's core working memory block.
