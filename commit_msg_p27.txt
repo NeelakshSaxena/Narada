@@ -1,0 +1,8 @@
+feat: implement Phase 27 Semantic Memory
+
+Completes Phase 27 by implementing the Vector Memory Architecture.
+
+- Creates `SemanticMemoryArchitecture` in `core/memory/semantic.py`.
+- Enforces a clear separation between `VectorStore` (for semantic matching) and `CanonicalStore` (source of truth).
+- Protects the system against vector DB failures by falling back gracefully to Full Text Search (FTS).
+- Asserts fallback boundaries with comprehensive test cases in `tests/memory/test_semantic.py`.
