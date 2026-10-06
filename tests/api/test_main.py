@@ -49,3 +49,9 @@ def test_get_memory():
         telemetry_entries = [m for m in data["memory"] if m.get("metadata", {}).get("type") == "telemetry"]
         # Since the test client executes requests sequentially, previous tests would have generated telemetry
         assert len(telemetry_entries) >= 0
+
+def test_delete_memory():
+    with TestClient(app) as test_client:
+        response = test_client.delete("/v1/memory/some_doc_id")
+        assert response.status_code == 200
+        assert response.json() == {"status": "deleted", "doc_id": "some_doc_id"}

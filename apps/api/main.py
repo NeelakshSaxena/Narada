@@ -98,6 +98,14 @@ async def get_memory():
     memories = await core.memory.get_all_metadata()
     return {"memory": memories}
 
+@app.delete("/v1/memory/{doc_id}")
+async def delete_memory(doc_id: str):
+    """
+    Endpoint to explicitly delete a memory from the Canonical Memory Store.
+    """
+    await core.memory.delete_metadata(doc_id)
+    return {"status": "deleted", "doc_id": doc_id}
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("apps.api.main:app", host="0.0.0.0", port=8000, reload=True)

@@ -27,6 +27,15 @@ async def chat_repl():
                     else:
                         print(f"Error fetching memory: {response.status_code}")
                     continue
+
+                if user_input.strip().lower().startswith("/forget "):
+                    doc_id = user_input.strip().split(" ", 1)[1]
+                    response = await client.delete(f"http://localhost:8000/v1/memory/{doc_id}", timeout=60.0)
+                    if response.status_code == 200:
+                        print(f"Narada> Forgotten memory {doc_id}.")
+                    else:
+                        print(f"Error deleting memory: {response.status_code}")
+                    continue
                 
                 payload = {
                     "messages": [{"role": "user", "content": user_input}],

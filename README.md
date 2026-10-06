@@ -1123,3 +1123,4 @@ License information has not yet been defined.
 - **Phase 41 (Responsibility Verification):** Completed. Formalized terminal states and cancellation propagation across asynchronous execution loops.
 - **Phase 42 (Background Worker Tuning):** Completed. Implemented dead-letter queues and retry limits, preventing endlessly looping failing tasks.
 - **Phase 43 (Long-Term Memory Hygiene):** Completed. Introduced maintenance jobs to safely detect contradictions and decay stale memories without blind overwrites.
+- **Phase 44 (User-Controlled Memory):** Completed. Exposed REST endpoints and `/forget` CLI commands to physically wipe persistent canonical memory.
