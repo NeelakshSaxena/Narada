@@ -63,6 +63,21 @@ class PostgresCanonicalMemoryStore:
     def __init__(self, pool: PostgresConnectionPool):
         self.pool = pool
         
+    async def store_audit_log(self, resp_id: str, task_id: str, action: str, tool: str, approval: str, result: str):
+        import uuid
+        from datetime import datetime
+        doc_id = f"audit-{uuid.uuid4()}"
+        metadata = {
+            "type": "audit",
+            "responsibility_id": resp_id,
+            "task_id": task_id,
+            "action": action,
+            "tool": tool,
+            "approval": approval,
+            "timestamp": datetime.utcnow().isoformat()
+        }
+        await self.store_metadata(doc_id, result, metadata)
+
     async def store_metadata(self, doc_id: str, text: str, metadata: Dict[str, Any]):
         meta_json = json.dumps(metadata)
         query = "INSERT INTO memory_canonical (id, text, metadata) VALUES ($1, $2, $3) ON CONFLICT (id) DO UPDATE SET text = EXCLUDED.text, metadata = EXCLUDED.metadata"

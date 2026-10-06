@@ -1,0 +1,8 @@
+feat: implement Phase 45 Audit Explorer
+
+Completes Phase 45 by mapping and exploring structured background audit trails.
+
+- Implements `store_audit_log` in `CanonicalMemoryStore` to preserve critical task lineage (responsibility -> tool -> approval -> result).
+- Exposes `GET /v1/audit` endpoint traversing and sorting the audit logs.
+- Adds interactive `/audit` command to the CLI for easy offline introspection.
+- Enhances API test suite validating the new endpoints.

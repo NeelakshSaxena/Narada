@@ -55,3 +55,11 @@ def test_delete_memory():
         response = test_client.delete("/v1/memory/some_doc_id")
         assert response.status_code == 200
         assert response.json() == {"status": "deleted", "doc_id": "some_doc_id"}
+
+def test_get_audit_trail():
+    with TestClient(app) as test_client:
+        response = test_client.get("/v1/audit")
+        assert response.status_code == 200
+        data = response.json()
+        assert "audit" in data
+        assert isinstance(data["audit"], list)

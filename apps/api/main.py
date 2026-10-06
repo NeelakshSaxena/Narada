@@ -90,6 +90,17 @@ async def create_responsibility(req: ResponsibilityRequest):
     job_id = await core.scheduler.schedule_job(req.task, "interval", interval=req.interval)
     return {"status": "created", "job_id": job_id}
 
+@app.get("/v1/audit")
+async def get_audit_trail():
+    """
+    Endpoint to explicitly fetch the audit trail of the agent.
+    """
+    all_mem = await core.memory.get_all_metadata()
+    audits = [m for m in all_mem if m.get("metadata", {}).get("type") == "audit"]
+    # Sort by timestamp if available
+    audits.sort(key=lambda x: x.get("metadata", {}).get("timestamp", ""), reverse=True)
+    return {"audit": audits}
+
 @app.get("/v1/memory")
 async def get_memory():
     """
