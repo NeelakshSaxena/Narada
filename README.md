@@ -1125,3 +1125,4 @@ License information has not yet been defined.
 - **Phase 43 (Long-Term Memory Hygiene):** Completed. Introduced maintenance jobs to safely detect contradictions and decay stale memories without blind overwrites.
 - **Phase 44 (User-Controlled Memory):** Completed. Exposed REST endpoints and `/forget` CLI commands to physically wipe persistent canonical memory.
 - **Phase 45 (Audit Explorer):** Completed. Structured background activity via explicit `/audit` trail records in canonical memory, accessible from REST and CLI.
+- **Phase 46 (Security Review Gate):** Completed. Codified core execution invariants (sandbox isolation, required human approval, secret protection) into a formal security test suite.

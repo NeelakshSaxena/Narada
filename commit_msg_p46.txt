@@ -1,0 +1,8 @@
+test: implement Phase 46 Security Review Gate
+
+Completes Phase 46 by codifying essential execution invariants into a dedicated security test suite.
+
+- Adds `tests/security/test_security_gates.py`.
+- Asserts strict whitelist sandbox isolation for tool loading.
+- Validates the `PermissionEngine` correctly blocks and gates high-risk tools pending human approval.
+- Validates audit mechanisms avoid exposing raw tool inputs to protect user secrets.
