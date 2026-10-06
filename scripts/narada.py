@@ -69,6 +69,26 @@ async def chat_repl():
             except Exception as e:
                 print(f"Error connecting to server: {e}")
 
+async def health_check_cmd():
+    print("Checking system health...")
+    async with httpx.AsyncClient() as client:
+        try:
+            response = await client.get("http://localhost:8000/health", timeout=5.0)
+            if response.status_code == 200:
+                data = response.json()
+                status = data.get("status", "UNKNOWN")
+                print(f"Overall Status: {status}")
+                print("Components:")
+                comps = data.get("components", {})
+                for k, v in comps.items():
+                    print(f"  - {k.upper()}: {v}")
+            else:
+                print(f"API returned {response.status_code}")
+                print("Overall Status: OFFLINE")
+        except Exception as e:
+            print("Failed to reach FastAPI service.")
+            print("Overall Status: OFFLINE")
+
 def main():
     parser = argparse.ArgumentParser(description="Narada CLI")
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -78,6 +98,7 @@ def main():
     start_parser.add_argument("--port", type=int, default=8000, help="Port to bind")
     
     chat_parser = subparsers.add_parser("chat", help="Start an interactive chat session")
+    health_parser = subparsers.add_parser("health", help="Check system health")
     
     args = parser.parse_args()
     
@@ -85,6 +106,8 @@ def main():
         start_server(args.host, args.port)
     elif args.command == "chat":
         asyncio.run(chat_repl())
+    elif args.command == "health":
+        asyncio.run(health_check_cmd())
 
 if __name__ == "__main__":
     main()

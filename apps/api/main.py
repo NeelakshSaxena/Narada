@@ -44,7 +44,7 @@ class ChatRequest(BaseModel):
 
 @app.get("/health")
 async def health_check():
-    return core.get_status()
+    return await core.get_status()
 
 @app.post("/v1/chat/completions")
 async def chat_completions(req: ChatRequest):
