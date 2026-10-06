@@ -36,3 +36,8 @@ def test_create_responsibility():
     data = response.json()
     assert data["status"] == "created"
     assert "job_id" in data
+
+def test_get_memory():
+    response = client.get("/v1/memory")
+    assert response.status_code == 200
+    assert "memory" in response.json()

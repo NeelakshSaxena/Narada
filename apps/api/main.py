@@ -63,6 +63,14 @@ async def create_responsibility(req: ResponsibilityRequest):
     job_id = await core.scheduler.schedule_job(req.task, "interval", interval=req.interval)
     return {"status": "created", "job_id": job_id}
 
+@app.get("/v1/memory")
+async def get_memory():
+    """
+    Endpoint to retrieve historical task logs from the Canonical Memory Store.
+    """
+    memories = await core.memory.get_all_metadata()
+    return {"memory": memories}
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("apps.api.main:app", host="0.0.0.0", port=8000, reload=True)

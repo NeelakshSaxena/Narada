@@ -1,0 +1,8 @@
+feat: implement Phase 39 Responsibility Memory
+
+Completes Phase 39 by exposing offline background records back to the human shell.
+
+- Exposes PostgreSQL `CanonicalMemoryStore` read capabilities directly into `NaradaCore`.
+- Exposes `GET /v1/memory` for generalized system introspection.
+- Enhances `scripts/narada.py` via `/memory` commands to pull offline completion reports automatically.
+- Validates read pathways successfully in `tests/api/test_main.py`.

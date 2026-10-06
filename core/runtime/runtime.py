@@ -16,16 +16,20 @@ class AgentRuntime:
 
 from core.scheduler.scheduler import LocalScheduler
 from core.events.redis_bus import RedisMock
+from core.storage.postgres import PostgresConnectionPool, PostgresCanonicalMemoryStore
 
 class NaradaCore:
     def __init__(self):
         self.agent = AgentRuntime()
         self.redis = RedisMock()
         self.scheduler = LocalScheduler(self.redis)
+        self.pool = PostgresConnectionPool("postgres://fake:5432")
+        self.memory = PostgresCanonicalMemoryStore(self.pool)
         self.is_running = False
         
     async def boot(self):
         self.is_running = True
+        await self.pool.connect()
         await self.scheduler.start()
         
     def get_status(self):
