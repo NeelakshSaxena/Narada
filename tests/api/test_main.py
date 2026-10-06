@@ -4,9 +4,10 @@ from apps.api.main import app
 client = TestClient(app)
 
 def test_health_check():
-    response = client.get("/health")
-    assert response.status_code == 200
-    assert response.json() == {"status": "ok", "running": True}
+    with TestClient(app) as test_client:
+        response = test_client.get("/health")
+        assert response.status_code == 200
+        assert response.json() == {"status": "ok", "running": True}
 
 from unittest.mock import patch
 
@@ -28,3 +29,10 @@ def test_get_responsibilities():
     response = client.get("/v1/responsibilities")
     assert response.status_code == 200
     assert response.json() == {"responsibilities": []}
+
+def test_create_responsibility():
+    response = client.post("/v1/responsibilities", json={"task": "Monitor web", "interval": 10})
+    assert response.status_code == 200
+    data = response.json()
+    assert data["status"] == "created"
+    assert "job_id" in data
