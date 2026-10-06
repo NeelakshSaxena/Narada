@@ -1,0 +1,8 @@
+feat: implement Phase 55 Dependency Graph
+
+Completes Phase 55 by establishing a foundational topological scheduler.
+
+- Instantiates `TaskNode` and `TaskGraph` within `core/scheduler/dag.py`.
+- Integrates deterministic DFS topological sort for computing unblocked execution orders.
+- Adds cyclic reference guards.
+- Writes comprehensive tests covering linear, complex branch, and cycle failure paths.
