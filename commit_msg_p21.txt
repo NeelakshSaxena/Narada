@@ -1,0 +1,8 @@
+feat: implement Phase 21 Model Routing
+
+Completes Phase 21 by adding dynamic model selection based on cost and privacy.
+
+- Introduces `ModelRouter` in `core/llm/router.py`.
+- Evaluates `cost`, `latency`, `privacy`, and `task_type` prior to model selection.
+- Enforces a critical safety boundary: tasks flagged as `private` are strictly blocked from being dispatched to remote providers.
+- Adds comprehensive coverage via `tests/llm/test_router.py`.
