@@ -1,0 +1,8 @@
+feat: implement Phase 30 Cloud Hybrid
+
+Completes Phase 30 by introducing Local Gateway Security constraints.
+
+- Creates `core/gateway/hybrid_security.py` enforcing HMAC signature validation.
+- Prevents remote environments from executing arbitrary local actions by whitelisting `allowed_operations`.
+- Ensures zero-trust validation for payloads arriving from cloud boundaries.
+- Asserts boundary safety through tests in `tests/gateway/test_hybrid.py`.
