@@ -1,11 +1,38 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 import logging
+import time
+import uuid
+from fastapi import FastAPI, Request
 from core.runtime.runtime import NaradaCore
 
 app = FastAPI(title="Narada API", version="0.1.0")
 logger = logging.getLogger("narada")
 core = NaradaCore()
+
+@app.middleware("http")
+async def telemetry_middleware(request: Request, call_next):
+    start_time = time.time()
+    response = await call_next(request)
+    process_time = time.time() - start_time
+    
+    if request.url.path != "/health":
+        client_ip = request.client.host if request.client else "unknown"
+        doc_id = f"telemetry-{uuid.uuid4()}"
+        text = f"API Call: {request.method} {request.url.path} returned {response.status_code}"
+        metadata = {
+            "type": "telemetry",
+            "method": request.method,
+            "path": request.url.path,
+            "status_code": response.status_code,
+            "latency": process_time,
+            "ip": client_ip,
+            "timestamp": start_time
+        }
+        # In a real app we'd dispatch to a background task, but we log synchronously here
+        await core.memory.store_metadata(doc_id=doc_id, text=text, metadata=metadata)
+        
+    return response
 
 class ChatMessage(BaseModel):
     role: str

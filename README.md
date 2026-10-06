@@ -1119,3 +1119,4 @@ License information has not yet been defined.
 - **Phase 37 (Scheduler Init):** Completed. Baseline job scheduler implemented to orchestrate recurring routines and publish wake-events into Redis.
 - **Phase 38 (Background Responsibility API):** Completed. Bootstrapped API endpoint bindings mapping user requests to local scheduler cycles.
 - **Phase 39 (Responsibility Memory):** Completed. Expanded CLI to natively query `CanonicalMemoryStore` revealing offline background worker history.
+- **Phase 40 (API Telemetry):** Completed. Injected HTTP middleware intercepting latency and access data, cementing foundational observability into canonical memory.
