@@ -1,0 +1,6 @@
+feat: implement Phase 61 Final Local Deployment
+
+Completes Phase 61 by refining containerized deployment assets.
+
+- Exposes environment variable loading inside `docker-compose.yml`.
+- Standardizes `.env.example` with requisite keys for external service providers (Sarvam, Ollama, Telegram, GitHub).

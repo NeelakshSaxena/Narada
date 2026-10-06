@@ -8,6 +8,8 @@ services:
       - .:/app
       # Mount the data directory for SQLite persistence across restarts
       - ./data:/app/data
+    env_file:
+      - .env
     environment:
       - ENV=development
     restart: unless-stopped
