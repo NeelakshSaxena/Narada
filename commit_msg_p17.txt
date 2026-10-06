@@ -1,8 +1,0 @@
-feat: implement Phase 17 Specialist Agents
-
-Completes Phase 17 by implementing the specialist delegation architecture.
-
-- Adds `Specialist` base class along with `DelegationInput` and `DelegationOutput` contracts in `core/specialists/base.py`.
-- Implements the strict Delegation Prompt system to wrap sub-agent context securely.
-- Ensures Nārada can act as the chief agent, delegating modular tasks to isolated workers and parsing their JSON response safely.
-- Adds test coverage via `tests/specialists/test_specialist.py`.
