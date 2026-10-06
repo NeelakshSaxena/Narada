@@ -1,0 +1,8 @@
+feat: implement Phase 58 External Service Health
+
+Completes Phase 58 by bringing time-aware backoff and failure accounting to external integrations.
+
+- Authors `ProviderHealthTracker` in `core/providers/health.py`.
+- Establishes `is_available()` gateway checks relying upon an internal `backoff_until` timestamp.
+- Protects downstream APIs from cyclic retry thundering-herd issues.
+- Implements deterministic mock-time tests in `tests/providers/test_health.py`.
