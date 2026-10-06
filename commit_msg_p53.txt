@@ -1,0 +1,8 @@
+feat: implement Phase 53 Batching
+
+Completes Phase 53 by providing event deduplication and roll-up capabilities.
+
+- Implements `EventBatcher` in `core/events/batching.py`.
+- Introduces payload-stable hashing to silently drop duplicated event bodies.
+- Adds source-based partitioning and `create_batch_event` serialization to collapse multiple related events into a single LLM processing cycle.
+- Integrates suite of assertions in `tests/events/test_batching.py`.
