@@ -1106,3 +1106,4 @@ License information has not yet been defined.
 - **Phase 24 ("Nārada While I Sleep"):** Completed. Core overnight autonomy loop (sleep/wake/reason/act) engineered.
 - **Phase 25 (Daily Digest):** Completed. Structured state daily briefing generator implemented.
 - **Phase 26 (Skills + Responsibilities + Channels):** Completed. End-to-end core event flow (User → Responsibility → Agent → Delivery) fully integrated.
+- **Phase 27 (Qdrant / Semantic Memory):** Completed. Vector Memory Architecture implemented with graceful FTS fallback.
