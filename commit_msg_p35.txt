@@ -1,7 +1,0 @@
-feat: implement Phase 35 E2E Interactive Chat Loop
-
-Completes Phase 35 by wiring the provider layer back into the execution loop.
-
-- Updates `core/runtime/runtime.py` to use `OllamaProvider` directly, abandoning simulated loop stubs.
-- Injects task context properly into LLM prompts.
-- Asserts that end-to-end calls properly tunnel from the FastAPI route `/v1/chat/completions` down to the `httpx.AsyncClient` boundary in `tests/agent/test_e2e_chat.py`.

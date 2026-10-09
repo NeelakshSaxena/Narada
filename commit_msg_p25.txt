@@ -1,7 +1,0 @@
-feat: implement Phase 25 Daily Digest
-
-Completes Phase 25 by introducing structured reporting.
-
-- Implements `DailyState` and `DigestGenerator` inside `core/reports/digest.py`.
-- Enforces the strict "Daily Digest Prompt", requiring the agent to synthesize structured state (events, completed work, approvals, failures) into a safe, human-readable format.
-- Adds `tests/reports/test_digest.py` to verify prompt construction and logic flow securely.

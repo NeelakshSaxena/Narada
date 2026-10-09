@@ -1,8 +1,0 @@
-feat: implement Phase 28 PostgreSQL
-
-Completes Phase 28 by implementing scalable canonical state boundaries.
-
-- Creates `core/storage/postgres.py` containing `PostgresResponsibilityStore` and `PostgresCanonicalMemoryStore`.
-- Achieves concurrency-readiness via connection pool modeling.
-- Employs strict abstraction boundaries ensuring raw SQL strings do not bleed into the `AutonomyEngine` or `SemanticMemoryArchitecture`.
-- Asserts state mapping correctness with full coverage in `tests/storage/test_postgres.py`.

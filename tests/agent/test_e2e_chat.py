@@ -23,19 +23,11 @@ def test_e2e_chat_completions():
     
     client = TestClient(app)
     
-    mock_data = {
-        "model": "gemma4-2b-uncensored:latest",
-        "message": {
-            "role": "assistant",
-            "content": "Step 1: Check logs. Step 2: Fix. Observation: Done."
-        },
-        "total_duration": 1234
-    }
+    async def mock_generate(*args, **kwargs):
+        from core.llm.models import LLMResponse
+        return LLMResponse(text="Step 1: Check logs. Step 2: Fix. Observation: Done.", metadata={})
 
-    async def mock_post(*args, **kwargs):
-        return AsyncMockResponse(mock_data)
-
-    with patch('httpx.AsyncClient.post', side_effect=mock_post):
+    with patch.object(core.agent.provider, 'generate', side_effect=mock_generate):
         response = client.post(
             "/v1/chat/completions",
             json={"messages": [{"role": "user", "content": "Fix the database"}], "model": "narada"}

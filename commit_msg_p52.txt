@@ -1,7 +1,0 @@
-feat: implement Phase 52 User Away State
-
-Completes Phase 52 by introducing user-availability aware notification delivery logic.
-
-- Implements `DeliveryManager`, `UserState`, and `QuietHours` in `core/notifications/delivery.py`.
-- Exposes flexible routing decisions (NOTIFY, QUEUE, DISCARD) contingent upon both the `NotificationPolicy` severity and current environmental availability.
-- Adds comprehensive suite of delivery routing test cases in `tests/notifications/test_delivery.py`.

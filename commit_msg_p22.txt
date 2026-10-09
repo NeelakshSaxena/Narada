@@ -1,8 +1,0 @@
-feat: implement Phase 22 Channel Gateway
-
-Completes Phase 22 by creating the unified communication layer.
-
-- Implements `ChannelProvider` and `ChannelManager` inside `core/gateway/channel.py`.
-- Formally defines the `Capability` Enum to build the Channel Capabilities Matrix, normalizing differences between Web, Telegram, SMS, etc.
-- Ensures the system can gracefully detect when a channel lacks features (like interactive approvals) and fallback or reject the operation.
-- Validates the abstraction through `tests/gateway/test_channel.py`.

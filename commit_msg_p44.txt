@@ -1,8 +1,0 @@
-feat: implement Phase 44 User-Controlled Memory
-
-Completes Phase 44 by introducing user-directed hard deletion of canonical memories.
-
-- Implements `DELETE /v1/memory/{doc_id}` across the FastAPI application layer.
-- Upgrades `narada.py` CLI chat loop with `/forget <id>` capability mapping to the new endpoint.
-- Augments the API test suite with hard deletion endpoint validations.
-- Guarantees true physical erasure from backend storage rather than soft deletion.

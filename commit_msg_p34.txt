@@ -1,8 +1,0 @@
-feat: implement Phase 34 Open WebUI Compatibility
-
-Completes Phase 34 by bridging Open WebUI to the Agent Runtime.
-
-- Intercepts inbound Open WebUI API calls in `apps/api/main.py`.
-- Extracts the final user message and pipes it explicitly into `AgentRuntime.execute_task`.
-- Implements an asynchronous mock agent loop inside `core/runtime/runtime.py` to prove architectural routing.
-- Packages the agent's observation into a strict OpenAI-compatible schema and validates with tests.

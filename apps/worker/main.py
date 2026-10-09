@@ -2,8 +2,9 @@ import asyncio
 import logging
 import uuid
 from core.events.redis_bus import RedisMock, RedisCoordinator
-from core.runtime.runtime import AgentRuntime
+from core.runtime.runtime import NaradaCore
 from core.storage.postgres import PostgresConnectionPool, PostgresCanonicalMemoryStore
+from providers.llm.ollama import OllamaProvider
 
 logger = logging.getLogger("narada-worker")
 
@@ -11,14 +12,22 @@ class TaskWorker:
     def __init__(self, redis_client=None, db_pool=None):
         self.redis = redis_client or RedisMock()
         self.coordinator = RedisCoordinator(self.redis)
-        self.pool = db_pool or PostgresConnectionPool("postgres://fake:5432")
-        self.memory = PostgresCanonicalMemoryStore(self.pool)
-        self.agent = AgentRuntime()
+        
+        self.core = NaradaCore(provider=OllamaProvider())
+        # Override core defaults with our injected ones if provided
+        if db_pool:
+            self.core.pool = db_pool
+            self.core.memory = PostgresCanonicalMemoryStore(db_pool)
+            
+        self.pool = self.core.pool
+        self.memory = self.core.memory
+        self.agent = self.core.agent
+        
         self.worker_id = str(uuid.uuid4())
         self.is_running = False
         
     async def start(self):
-        await self.pool.connect()
+        await self.core.boot()
         subscriber = await self.redis.subscribe("scheduled_tasks")
         logger.info(f"Worker {self.worker_id} started, listening on scheduled_tasks...")
         self.is_running = True

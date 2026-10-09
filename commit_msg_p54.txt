@@ -1,7 +1,0 @@
-feat: implement Phase 54 Priority Queue
-
-Completes Phase 54 by introducing severity-based prioritization logic.
-
-- Creates `core/scheduler/queue.py` defining `TaskPriority` enums.
-- Implements `PriorityTaskQueue` backed by `heapq` for `O(log N)` prioritization with deterministic timestamp-based fallback sorting.
-- Includes thorough unit testing in `tests/scheduler/test_queue.py`.

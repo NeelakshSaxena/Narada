@@ -5,16 +5,29 @@ import time
 import uuid
 from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
+
+from core.config.loader import load_config, load_secrets
+from providers.llm.factory import create_provider
 from core.runtime.runtime import NaradaCore
 
-app = FastAPI(title="Narada API", version="0.1.0")
+app = FastAPI(title="Narada API", version="1.0.0")
 
 import os
 static_dir = os.path.join(os.path.dirname(__file__), "static")
 app.mount("/dashboard", StaticFiles(directory=static_dir, html=True), name="static")
 
 logger = logging.getLogger("narada")
-core = NaradaCore()
+
+# Load persisted configuration and construct the provider
+_config = load_config()
+_secrets = load_secrets()
+_provider = create_provider(
+    {"provider": _config.llm.provider, "model": _config.llm.model, "base_url": _config.llm.base_url},
+    _secrets,
+) if _config.is_configured else create_provider(
+    {"provider": "ollama", "model": "llama2"},
+)
+core = NaradaCore(_provider, user_name=_config.user if _config.user else "User")
 
 @app.middleware("http")
 async def telemetry_middleware(request: Request, call_next):
@@ -58,10 +71,18 @@ async def chat_completions(req: ChatRequest):
     OpenAI-compatible chat completions endpoint for Open WebUI.
     """
     last_message = req.messages[-1].content if req.messages else ""
+    from core.llm.models import LLMError
+    from fastapi import HTTPException
     
     # Process through AgentExecutor (Goal -> Plan -> Execute)
-    final_observation = await core.agent.execute_task(last_message)
-    
+    try:
+        msg_list = [{"role": m.role, "content": m.content} for m in req.messages]
+        final_observation = await core.agent.interact(msg_list)
+    except LLMError as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    except Exception as e:
+        logger.error(f"Unexpected error: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail="Internal agent error")
     return {
         "id": "chatcmpl-123",
         "object": "chat.completion",

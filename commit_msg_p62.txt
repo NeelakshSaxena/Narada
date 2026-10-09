@@ -1,7 +1,0 @@
-feat: implement Phase 62 System Integration Testing
-
-Completes Phase 62 by writing structural end-to-end acceptance tests mimicking real autonomous loops.
-
-- Injects `test_narada_demo.py` into `tests/integration/`.
-- Sets up mocked `EventBus`, `LLMProvider`, and `Executor` dependencies to simulate event-driven wakeups.
-- Demonstrates structural integration of `AgentLoop`, verifying the core "event -> state execution -> status" architecture.

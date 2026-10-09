@@ -1,8 +1,0 @@
-feat: implement Phase 40 API Telemetry
-
-Completes Phase 40 by binding operational metrics straight into system memory.
-
-- Deploys `telemetry_middleware` in `apps/api/main.py` grabbing path, verb, latency, and client IPs.
-- Configures middleware to bypass `/health` checks preserving storage hygiene.
-- Wires the telemetry objects to write directly into `PostgresCanonicalMemoryStore` giving the agent a historical timeline of interactions.
-- Validates the middleware operation across standard routes.

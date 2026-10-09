@@ -360,15 +360,14 @@ def run_setup():
     console.print("  › ask before taking consequential actions\n")
     console.print("But you don't need to configure everything now.\nJust tell me what needs doing.\n")
     console.print("[dim]────────────────────────────────────────────────────────[/dim]\n")
-    console.print("Try:\n")
-    console.print("  [dim]\"Research the latest Sarvam API documentation.\"[/dim]")
-    console.print("  [dim]\"Remember that my project uses Python.\"[/dim]")
-    console.print("  [dim]\"Watch this GitHub repository.\"[/dim]\n")
-    console.print("[dim]────────────────────────────────────────────────────────[/dim]\n")
-    console.print("Nārada is listening.\n")
-    Prompt.ask("› ", default="", show_default=False)
     
-    print("\nSetup complete. You can now run `narada chat` to begin.")
+    console.print("Starting Nārada…\n")
+    time.sleep(0.8)
+    
+    # Immediately launch chat — no separate command required
+    from apps.terminal.app import NaradaTerminalUI
+    app = NaradaTerminalUI()
+    app.run()
 
 if __name__ == "__main__":
     run_setup()

@@ -1,8 +1,0 @@
-feat: implement Phase 36 Task Worker
-
-Completes Phase 36 by deploying the background Redis listener loop.
-
-- Initializes `apps/worker/main.py` running a continuous task consumer.
-- Applies Redis Distributed Locking (`RedisCoordinator`) to prevent parallel workers from duplicating jobs.
-- Attaches the worker ID to execution results and writes them reliably to `PostgresCanonicalMemoryStore`.
-- Validates the execution and logging stack via `test_worker_loop`.

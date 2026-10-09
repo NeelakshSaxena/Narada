@@ -1,5 +1,5 @@
 from fastapi.testclient import TestClient
-from apps.api.main import app
+from apps.api.main import app, core
 
 client = TestClient(app)
 
@@ -15,7 +15,7 @@ def test_health_check():
 from unittest.mock import patch
 
 def test_chat_completions():
-    with patch('providers.llm.ollama.OllamaProvider.generate') as mock_gen:
+    with patch.object(core.agent.provider, 'generate') as mock_gen:
         from core.llm.models import LLMResponse
         mock_gen.return_value = LLMResponse(text="Mocked observation", metadata={"model": "test-model"})
         

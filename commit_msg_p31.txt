@@ -1,8 +1,0 @@
-feat: implement Phase 31 Ollama Provider
-
-Completes Phase 31 by implementing the concrete HTTP-backed `OllamaProvider`.
-
-- Uses `httpx.AsyncClient` to asynchronously query the local Ollama `/api/chat` API.
-- Implements tool-calling metadata injection bridging Ollama's schema into Narada's canonical `LLMResponse`.
-- Prevents exceptions from leaking outside the provider boundary by wrapping them in `LLMError`.
-- Validated securely with mocking inside `tests/providers/test_ollama.py`.

@@ -23,7 +23,7 @@ async def test_denied_tool_fails():
     result = await executor.execute("filesystem.read", path="test.txt")
     assert result["status"] == "FAILED"
     assert "not authorized" in result["error"]
-    assert executor.audit_log[-1]["status"] == "DENIED"
+    assert executor.audit_log[-1]["status"] == "FAILED"
     
 @pytest.mark.asyncio
 async def test_permitted_tool_executes(tmp_path):

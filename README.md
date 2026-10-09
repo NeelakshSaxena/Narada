@@ -88,6 +88,85 @@ The initial priority is the **agent loop**, not the UI.
 
 > **Prove that Nārada can reason, act, observe, remember, and continue before building a sophisticated interface around it.**
 
+## What's Working Right Now (v1.0.0)
+
+Nārada has completed its foundational V1 build (Phases 0–65) and currently supports the following capabilities:
+
+**Core Agent Runtime**
+- **Stateful Agent Loop**: End-to-end autonomous reasoning, planning, tool execution, and memory integration.
+- **Provider Gateway**: Seamless switching between models (e.g., Ollama, Sarvam) with dynamic routing based on cost, latency, and privacy.
+- **Interactive Chat & Terminal UI**: Fully functioning CLI, interactive Textual-based Mascot UI, and Open WebUI compatibility.
+- **FastAPI Core**: Standardized OpenAI-compatible endpoints with a web dashboard control plane.
+
+**Responsibility & Autonomy**
+- **Responsibility Engine**: Assign long-running tasks, schedules, and priorities that outlive a single session.
+- **Overnight Autonomy**: "Nārada While I Sleep" mode, with event-driven wakeups, background task workers, and sleep/wake loops.
+- **Task Orchestration**: Dependency graphs, priority queues, and event batching to minimize LLM overhead.
+- **Daily Digest**: Generates structured state briefings for the user upon return.
+
+**Tools & Safety**
+- **Tool Registry & MCP**: Extensible tool abstraction and native Model Context Protocol (MCP) support.
+- **Permissions & Approvals**: High-risk actions require explicit human backend approval. Asynchronous flows allow requests to pause while the user is away.
+- **Sandbox Execution**: Ephemeral sandbox boundaries for safely executing untrusted code or tasks.
+- **Budgets & Circuit Breakers**: Strict token limits, API health tracking, and circuit breakers to prevent infinite loops and control costs.
+
+**Memory & State**
+- **Semantic & Canonical Memory**: PostgreSQL-backed canonical state and Qdrant-backed vector memory (with full-text search fallback).
+- **Long-Term Hygiene**: Maintenance jobs handle decaying stale memories and resolving contradictions.
+- **Audit Trails**: Full transparency with `/audit` logs and `/forget` endpoints for user-controlled memory wiping.
+
+**Specialists & Skills**
+- **Delegation Architecture**: Integrated specialist agents (like the Coding Specialist) governed by strict delegation contracts.
+- **Procedural Workflows**: Reusable skill systems for repeatable agentic routines and web research pipelines.
+
+### What You Can Do Now
+Here are a few concrete examples of what Nārada can do in v1.0.0:
+- **Assign Long-Running Goals:** "Monitor the status of my GitHub repository and notify me if a new PR is opened." Nārada will wake up periodically in the background, check the status, and report back.
+- **Delegate Code Tasks:** Ask Nārada to "review the last 3 commits and write a summary." It will spin up a sandbox and use its Git/Coding tools to safely generate a report.
+- **Auditable Safety:** Tell Nārada to "delete the temporary files in my project." Nārada will realize this is a destructive action and pause to request human approval before executing it.
+- **Maintain Context:** Chat with Nārada about a complex project, then type `/memory` in the CLI to see exactly what long-term context it decided to retain.
+- **Overnight Worker:** Ask Nārada to research a topic while you sleep. When you wake up, a Daily Digest will be waiting for you with the structured results.
+
+---
+
+## How to Start
+
+You can run Nārada using Docker (recommended) or purely locally via Python.
+
+### Method 1: Docker (Recommended)
+```bash
+# Clone the repository
+git clone https://github.com/NeelakshSaxena/Narada.git
+cd Narada
+
+# Copy the example environment variables
+cp .env.example .env
+
+# Start the Narada Core API in the background
+docker compose up -d
+
+# Open the Terminal Mascot UI to start interacting
+python scripts/narada.py chat
+```
+
+### Method 2: Local Python Environment
+```bash
+# Set up a virtual environment and install dependencies
+python -m venv venv
+# On macOS/Linux: source venv/bin/activate
+# On Windows: venv\Scripts\activate
+pip install -e .
+
+# Run the setup script to configure your LLM provider (Ollama, Sarvam, etc.)
+python scripts/narada.py setup
+
+# Start the local API server
+python scripts/narada.py start
+
+# In a new terminal window, launch the interactive chat interface
+python scripts/narada.py chat
+```
+
 ---
 
 # Core Architecture
@@ -1077,74 +1156,13 @@ License information has not yet been defined.
 
 # Status
 
-**Early development.**
+**Version 1.0.0 (Foundation Complete)**
 
-- **Phase 0 (Architecture Freeze):** Completed. Initial architectural boundaries, core interfaces, and configurations have been defined.
-- **Phase 1 (NĀRADA CORE Container):** Completed. Backend FastAPI container stubbed with persistence layer attached.
-- **Phase 2 (Configuration and Provider Gateway):** Completed. Provider abstraction layer (Sarvam, Ollama, Fake) implemented with strict type normalization.
-- **Phase 3 (First Agent Loop):** Completed. Stateful agent runtime loop developed featuring deterministic planning and execution boundaries.
-- **Phase 4 (Memory Foundation):** Skipped/Pending.
-- **Phase 5 (Tool Registry):** Completed. Rigorous tool execution lifecycle and metadata bounds established.
-- **Phase 6 (Permissions Engine):** Completed. Architectural safety guarantees implemented; high-risk actions require explicit human backend approval.
-- **Phase 7 (MCP):** Completed. External Model Context Protocol tools safely bridged behind Nārada's authoritative permission gate.
-- **Phase 8 (Browser and Web Research):** Completed. Agentic web research pipeline established with infinite-loop prevention and structured fact extraction.
-- **Phase 9 (Skills System):** Completed. Reusable procedural workflows established to prevent workflow hallucination.
-- **Phase 10 (Scheduled Responsibilities):** Completed. Background in-process scheduler and self-contained execution model implemented.
-- **Phase 11 (Responsibility Engine):** Completed. Lifecycle state machine, priority rules, and execution memory bounds established.
-- **Phase 12 (Event-Driven Wakeups):** Completed. Autonomous reactive event pipeline with LLM relevance filtering implemented.
-- **Phase 13 (Notification Gateway):** Completed. Multi-channel delivery gateway built to separate work execution from message delivery.
-- **Phase 14 (Away-Mode Notification Policy):** Completed. Spam-prevention policies and event deduplication engine implemented.
-- **Phase 15 (Sandbox Runtime):** Completed. Ephemeral execution boundary and sandbox manager implemented.
-- **Phase 16 (Coding Agent):** Completed. Coding Specialist workflow with sandbox integration and secure verification prompt implemented.
-- **Phase 17 (Specialist Agents):** Completed. Specialist architecture and strict Delegation Contract implemented.
-- **Phase 18 (Autonomous Recovery):** Completed. Recovery Matrix, failure handling, and idempotency checks implemented.
-- **Phase 19 (Approval While User Is Away):** Completed. Asynchronous approval request system with safe state transitions and expirations built.
-- **Phase 20 (Session Model):** Completed. Distinct entities for Session/Run/Conversation defined, and Context Budget Policy implemented.
-- **Phase 21 (Model Routing):** Completed. Dynamic model router evaluating privacy, cost, and latency built.
-- **Phase 22 (Channel Gateway):** Completed. `ChannelProvider` abstraction and Capability Matrix implemented.
-- **Phase 23 (Webhook Gateway):** Completed. Secure webhook receiver with signature, timestamp, and replay validation implemented.
-- **Phase 24 ("Nārada While I Sleep"):** Completed. Core overnight autonomy loop (sleep/wake/reason/act) engineered.
-- **Phase 25 (Daily Digest):** Completed. Structured state daily briefing generator implemented.
-- **Phase 26 (Skills + Responsibilities + Channels):** Completed. End-to-end core event flow (User → Responsibility → Agent → Delivery) fully integrated.
-- **Phase 27 (Qdrant / Semantic Memory):** Completed. Vector Memory Architecture implemented with graceful FTS fallback.
-- **Phase 28 (PostgreSQL):** Completed. Canonical state abstraction migrated to PostgreSQL with preserved domain integrity.
-- **Phase 29 (Redis):** Completed. Redis event bus and distributed locking coordinator implemented for multi-worker support.
-- **Phase 30 (Cloud / Hybrid):** Completed. Local Gateway Security boundary implemented for safe cloud-to-local communication.
-- **Phase 31 (Ollama LLM Provider Integration):** Completed. HTTP-backed Ollama provider implemented with native tool-calling support.
-- **Phase 32 (FastAPI Server Core):** Completed. Core FastAPI application bootstrapped with OpenAI-compatible endpoint schema.
-- **Phase 33 (CLI Entrypoint):** Completed. Python CLI interface built to manage daemon lifecycles and interact natively.
-- **Phase 34 (Open WebUI Compatibility):** Completed. Chat endpoint configured to bridge Open WebUI clients directly into the Agent Execution flow.
-- **Phase 35 (E2E Interactive Chat Loop):** Completed. Wired `OllamaProvider` natively into `AgentExecutor`, finishing the end-to-end API pipeline.
-- **Phase 36 (Task Worker):** Completed. Asynchronous background worker established to drain Redis queues and log completion records into PostgreSQL memory stores.
-- **Phase 37 (Scheduler Init):** Completed. Baseline job scheduler implemented to orchestrate recurring routines and publish wake-events into Redis.
-- **Phase 38 (Background Responsibility API):** Completed. Bootstrapped API endpoint bindings mapping user requests to local scheduler cycles.
-- **Phase 39 (Responsibility Memory):** Completed. Expanded CLI to natively query `CanonicalMemoryStore` revealing offline background worker history.
-- **Phase 40 (API Telemetry):** Completed. Injected HTTP middleware intercepting latency and access data, cementing foundational observability into canonical memory.
-- **Phase 41 (Responsibility Verification):** Completed. Formalized terminal states and cancellation propagation across asynchronous execution loops.
-- **Phase 42 (Background Worker Tuning):** Completed. Implemented dead-letter queues and retry limits, preventing endlessly looping failing tasks.
-- **Phase 43 (Long-Term Memory Hygiene):** Completed. Introduced maintenance jobs to safely detect contradictions and decay stale memories without blind overwrites.
-- **Phase 44 (User-Controlled Memory):** Completed. Exposed REST endpoints and `/forget` CLI commands to physically wipe persistent canonical memory.
-- **Phase 45 (Audit Explorer):** Completed. Structured background activity via explicit `/audit` trail records in canonical memory, accessible from REST and CLI.
-- **Phase 46 (Security Review Gate):** Completed. Codified core execution invariants (sandbox isolation, required human approval, secret protection) into a formal security test suite.
-- **Phase 47 (Email/Messaging Dispatch Scaffold):** Completed. Defined `MessageProvider` abstraction and mock implementation for dispatching offline user alerts.
-- **Phase 48 (Permission Policy Injector):** Completed. Added `PolicyInjector` to dynamically embed `.agents/AGENTS.md` context constraints into the agent's core working memory block.
-- **Phase 49 (System Health Dashboard CLI):** Completed. Added internal dependency checks (DB, Redis) and a `narada health` CLI diagnostic command.
-- **Phase 50 (Resource Limiter & Circuit Breaker):** Completed. Guardrailed agent loops with an auditing circuit breaker to catch infinite loops and constrain token spend.
-- **Phase 51 (Web Dashboard):** Completed. Implemented a control plane UI tracking real-time status and telemetry mounted onto the FastAPI service.
-- **Phase 52 (User Away State):** Completed. Added `DeliveryManager` and `QuietHours` to defer or route notifications dynamically based on user availability and DND configuration.
-- **Phase 53 (Batching):** Completed. Built `EventBatcher` to deduplicate inbound events and group related triggers into single `batch` payloads to minimize LLM overhead.
-- **Phase 54 (Priority Queue):** Completed. Added `PriorityTaskQueue` for deterministic severity-based work ordering (CRITICAL to BACKGROUND) over simple FIFO.
-- **Phase 55 (Dependency Graph):** Completed. Structured `TaskGraph` to yield safe, cycle-checked topological task execution sequences for complex nested responsibilities.
-- **Phase 56 (Long-Running Projects):** Completed. Implemented hierarchical structures `Project -> Responsibility -> Goal -> Task` mapping recursive state propagation to structure complex endeavors.
-- **Phase 57 (Project Status Prompt):** Completed. Implemented `ProjectStatusPrompt` to recursively serialize deep project states into LLM-friendly contextual summaries.
-- **Phase 58 (External Service Health):** Completed. Authored `ProviderHealthTracker` recording success/failure counts and managing time-based API backoff windows.
-- **Phase 59 (Provider Circuit Breaker):** Completed. Built `ProviderCircuitBreaker` enabling `CLOSED -> OPEN -> HALF_OPEN` transitions to enforce API protection.
-- **Phase 60 (Cost Safety):** Completed. Introduced `BudgetTracker` enforcing strict thresholds across runtime duration, API spend, and model/tool call volume to guarantee safe autonomy.
-- **Phase 61 (Final Local Deployment):** Completed. Finalized docker orchestration linking the containerized backend with exposed variable structures inside `.env.example`.
-- [x] **Phase 62 (System Integration Testing):** Completed. Structured an end-to-end integration demo within `test_narada_demo.py` verifying stateful autonomous event loops.
-- [x] **Phase 63 (V1 Release Tagging):** Completed. Finalized documentation, applied `v1.0.0` version markers, and concluded the foundational agentic build-out sequence.
-- [x] **Phase 64 (Mascot Terminal UI):** Completed. Implemented the Nārada terminal interface as an interactive Textual application featuring an animated ASCII mascot representing agent runtime states.
-- [x] **Phase 65 (Terminal UI Formatting & Polish):** Completed. Refactored terminal presentation layer to properly render Rich markup, established a clean structural hierarchy, and dynamically surfaced the active LLM provider/model configuration.
+Nārada has successfully completed its V1 "Can Act" milestone (Phases 0-65). The core agent runtime, permissions engine, memory stores, tool registry, and initial user interfaces (Terminal & Dashboard) are fully operational.
+
+> 📚 **Want to see exactly how Nārada was built?**
+> Nārada was built sequentially across 65 distinct architectural phases. 
+> For a detailed, phase-by-phase breakdown of the engineering roadmap and completion logs, see: [Detailed Agentic Build Roadmap](docs/NARADA_DETAILED_AGENTIC_BUILD.md).
 
 ---
 **Build Pipeline Complete — V1.0.0**

@@ -1,23 +1,24 @@
 from typing import Optional
-from core.providers.base import LLMProvider
-from core.llm.models import LLMResponse, LLMError
 
-class SarvamProvider(LLMProvider):
-    def __init__(self, api_key: str, model: str):
-        self.api_key = api_key
-        self.model = model
-        
+import httpx
+
+from core.llm.models import LLMError, LLMResponse
+from providers.llm.openai_compat import OpenAICompatibleProvider
+
+
+class SarvamProvider(OpenAICompatibleProvider):
+    """Sarvam chat completions (OpenAI-shaped API, `api-subscription-key` auth)."""
+    provider_name = "sarvam"
+    label = "Sarvam"
+
+    def __init__(self, api_key: str, model: str, base_url: Optional[str] = None,
+                 transport: Optional[httpx.AsyncBaseTransport] = None):
+        super().__init__(model=model, api_key=api_key, base_url=base_url, transport=transport)
+
+    def _headers(self):
+        return {"api-subscription-key": self.api_key}
+
     async def generate(self, prompt: str, **kwargs) -> LLMResponse:
         if not self.api_key:
             raise LLMError(message="SARVAM_API_KEY is not set", provider="sarvam")
-        
-        try:
-            # Simulate HTTP call to Sarvam
-            pass
-        except Exception as e:
-            raise LLMError(message=f"Sarvam API error: {str(e)}", provider="sarvam", original_error=e)
-            
-        return LLMResponse(text="[Sarvam Output]", metadata={"model": self.model})
-
-    async def stream(self, prompt: str, **kwargs):
-        raise NotImplementedError("Stream not implemented for Sarvam")
+        return await super().generate(prompt, **kwargs)

@@ -1,7 +1,0 @@
-feat: implement Phase 24 Nārada While I Sleep
-
-Completes Phase 24 by introducing the core overnight autonomy loop.
-
-- Creates `AutonomyEngine` and `AutonomyState` in `core/runtime/overnight.py` to securely manage long-running disconnected watches.
-- Implements the critical lifecycle path: wake -> reason -> act -> remember -> notify -> sleep.
-- Verifies that mundane events gracefully skip action while important events trigger full workflows and notifications, via `tests/runtime/test_overnight.py`.

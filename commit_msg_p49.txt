@@ -1,7 +1,0 @@
-feat: implement Phase 49 System Health Dashboard
-
-Completes Phase 49 by introducing dependency-aware health checks and a diagnostic CLI utility.
-
-- Refactors `/health` endpoint and `AgentRuntime.get_status()` to report fine-grained states (Postgres, Redis, API).
-- Introduces `narada health` subcommand in `scripts/narada.py` to print a clean terminal dashboard of readiness metrics.
-- Updates API tests to reflect the new nested payload schema.

@@ -1,7 +1,0 @@
-feat: implement Phase 60 Cost Safety
-
-Completes Phase 60 by bringing deterministic constraint evaluation to autonomous responsibilities.
-
-- Implements `BudgetConfig` mapping boundaries for `max_runtime`, `max_model_calls`, `max_tool_calls`, and `max_estimated_cost`.
-- Develops `BudgetTracker` state machine under `core/responsibilities/budget.py` throwing `BudgetExceededError` when parameters overflow limits.
-- Provides granular safety boundary testing inside `tests/responsibilities/test_budget.py`.

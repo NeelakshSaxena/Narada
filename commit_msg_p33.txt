@@ -1,8 +1,0 @@
-feat: implement Phase 33 CLI Entrypoint
-
-Completes Phase 33 by constructing the CLI boundary.
-
-- Develops `scripts/narada.py` utilizing standard `argparse` mechanics to serve as the user's primary shell interaction layer.
-- Subcommand `start` exposes Uvicorn boot procedures mapping custom network hosts and ports.
-- Subcommand `chat` exposes an interactive REPL interfacing asynchronously with local API endpoints.
-- Validates terminal input blocking loops properly within `tests/scripts/test_cli.py`.

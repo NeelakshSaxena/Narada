@@ -8,9 +8,8 @@ def test_mascot_state_changes():
         app = NaradaTerminalUI()
         async with app.run_test() as pilot:
             mascot = app.query_one(MascotWidget)
-            
-            # Initial state should be idle
-            assert mascot.current_state == "idle"
+            # Initial state should be hello
+            assert mascot.current_state == "hello"
             
             # Change state
             mascot.set_state("thinking")

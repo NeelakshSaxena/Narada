@@ -1,8 +1,0 @@
-feat: implement Phase 38 Background Responsibility API
-
-Completes Phase 38 by mapping REST requests to local scheduled intervals.
-
-- Augments `NaradaCore` natively tracking the Redis bus and local scheduler instances.
-- Re-wires `apps/api/main.py` leveraging FastAPI's startup event to gracefully initiate the engine loop.
-- Exposes `POST /v1/responsibilities` passing JSON payload intervals dynamically down to the `scheduler.schedule_job` method.
-- Secures application state assertions inside `tests/api/test_main.py`.

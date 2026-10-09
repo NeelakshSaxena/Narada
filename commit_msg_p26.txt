@@ -1,7 +1,0 @@
-feat: implement Phase 26 Core Integration
-
-Completes Phase 26 by connecting the foundational architectural blocks.
-
-- Introduces `EndToEndFlow` in `core/runtime/integration.py`.
-- Executes the path: Responsibility -> Skill -> Task -> Agent -> Tools -> Memory -> Delivery.
-- Provides comprehensive mock-driven unit testing in `tests/runtime/test_integration.py` to assert correct interactions and safe context hand-offs between system boundaries.

@@ -1,8 +1,0 @@
-feat: implement Phase 32 FastAPI Server Core
-
-Completes Phase 32 by laying down the FastAPI foundation.
-
-- Introduces `NaradaCore` singleton in `core/runtime/runtime.py`.
-- Exposes `apps/api/main.py` with `/health`, `/v1/responsibilities`, and `/v1/chat/completions`.
-- Ensures OpenAI compatibility in the chat completions route format.
-- Validates the endpoints via `TestClient` in `tests/api/test_main.py`.

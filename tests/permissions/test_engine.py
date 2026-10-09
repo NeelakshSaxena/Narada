@@ -63,7 +63,7 @@ async def test_executor_enforces_approval(tmp_path):
     # Audit log check
     assert executor.audit_log[0]["status"] == "PENDING_APPROVAL"
     assert executor.audit_log[1]["status"] == "PENDING"
-    assert executor.audit_log[2]["status"] == "FAILED"
+    assert executor.audit_log[2]["status"] == "DENIED"
 
 @pytest.mark.asyncio
 async def test_executor_executes_after_approval(tmp_path):

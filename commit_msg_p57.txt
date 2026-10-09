@@ -1,8 +1,0 @@
-feat: implement Phase 57 Project Status Prompt
-
-Completes Phase 57 by extracting structured hierarchical project states into text summaries.
-
-- Introduces `ProjectStatusPrompt` in `core/responsibilities/prompts.py`.
-- Formats hierarchical states natively emitted by the `Project` class, translating `active`, `pending`, `in_progress`, `completed`, and `blocked` markers into descriptive LLM inputs.
-- Embeds strict LLM execution rules around inference and inference-free completions.
-- Adds comprehensive format testing via `tests/responsibilities/test_prompts.py`.

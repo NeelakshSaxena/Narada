@@ -1,9 +1,0 @@
-feat: implement Phase 23 Webhook Gateway
-
-Completes Phase 23 by securing external event ingress.
-
-- Implements `WebhookGateway` and `WebhookSecurity` in `core/gateway/webhook.py`.
-- Hardens the endpoint against blind execution by enforcing HMAC SHA-256 signature verification.
-- Implements anti-replay protection by tracking processed event IDs.
-- Adds temporal security by rejecting stale timestamps.
-- Verifies all security behaviors via `tests/gateway/test_webhook.py`.

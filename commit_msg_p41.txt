@@ -1,9 +1,0 @@
-feat: implement Phase 41 Responsibility Verification
-
-Completes Phase 41 by solidifying advanced responsibility lifecycle management.
-
-- Extends `ResponsibilityStatus` with `CANCELLED`, `STOPPED`, `DISABLED`, and `ARCHIVED`.
-- Adds hard terminal state locks preventing transitions out of dead statuses.
-- Modifies `ResponsibilityScheduler` to run agent tasks in trackable `asyncio.Task` references.
-- Actively propagates cancellations to running tasks inside the polling loop.
-- Expands test coverage verifying pause semantics and cancellation delivery.

@@ -1,8 +1,0 @@
-feat: implement Phase 56 Long-Running Projects
-
-Completes Phase 56 by introducing a persistent Project-level structural hierarchy.
-
-- Builds the 4-tier model inside `core/responsibilities/project.py`.
-- Introduces recursive status resolution logic, automatically transitioning parent structures based on children node states (pending, in_progress, completed).
-- Provides JSON-friendly structure extraction method `get_structured_state()`.
-- Incorporates integration coverage inside `tests/responsibilities/test_project.py`.

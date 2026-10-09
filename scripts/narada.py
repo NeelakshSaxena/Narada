@@ -4,9 +4,11 @@ import uvicorn
 import httpx
 import asyncio
 
+
 def start_server(host: str = "0.0.0.0", port: int = 8000):
     print(f"Starting Narada API on {host}:{port}")
     uvicorn.run("apps.api.main:app", host=host, port=port)
+
 
 async def chat_repl():
     print("Welcome to Narada CLI Chat. Type 'exit' to quit.")
@@ -69,6 +71,7 @@ async def chat_repl():
             except Exception as e:
                 print(f"Error connecting to server: {e}")
 
+
 async def health_check_cmd():
     print("Checking system health...")
     async with httpx.AsyncClient() as client:
@@ -89,9 +92,17 @@ async def health_check_cmd():
             print("Failed to reach FastAPI service.")
             print("Overall Status: OFFLINE")
 
+
+def launch_chat():
+    """Launch the Textual chat UI with the saved configuration."""
+    from apps.terminal.app import NaradaTerminalUI
+    app = NaradaTerminalUI()
+    app.run()
+
+
 def main():
     parser = argparse.ArgumentParser(description="Narada CLI")
-    subparsers = parser.add_subparsers(dest="command", required=True)
+    subparsers = parser.add_subparsers(dest="command")
     
     start_parser = subparsers.add_parser("start", help="Start the Narada FastAPI server")
     start_parser.add_argument("--host", default="0.0.0.0", help="Host to bind")
@@ -103,17 +114,33 @@ def main():
     
     args = parser.parse_args()
     
+    # No subcommand: auto-detect whether onboarding is needed
+    if args.command is None:
+        from core.config.loader import config_exists
+        if config_exists():
+            launch_chat()
+        else:
+            from apps.terminal.setup import run_setup
+            run_setup()
+        return
+    
     if args.command == "start":
         start_server(args.host, args.port)
     elif args.command == "chat":
-        from apps.terminal.app import NaradaTerminalUI
-        app = NaradaTerminalUI()
-        app.run()
+        from core.config.loader import config_exists
+        if not config_exists():
+            from rich.console import Console
+            Console().print("[yellow]Nārada has not been configured yet.[/yellow]\n")
+            from apps.terminal.setup import run_setup
+            run_setup()
+        else:
+            launch_chat()
     elif args.command == "health":
         asyncio.run(health_check_cmd())
     elif args.command == "setup":
         from apps.terminal.setup import run_setup
         run_setup()
+
 
 if __name__ == "__main__":
     main()

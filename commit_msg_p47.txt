@@ -1,7 +1,0 @@
-feat: implement Phase 47 Messaging Scaffold
-
-Completes Phase 47 by scaffolding a provider for asynchronous user notifications.
-
-- Adds `MessageProvider` interface in `core/notifications/base.py`.
-- Adds `MockMessageProvider` for safe testing and local logging.
-- Includes tests guaranteeing reliable message state capture.
