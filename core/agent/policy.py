@@ -2,9 +2,9 @@ import os
 from typing import Optional
 
 class PolicyInjector:
-    def __init__(self, workspace_root: str = "."):
-        self.workspace_root = workspace_root
-        self.policy_path = os.path.join(workspace_root, ".agents", "AGENTS.md")
+    def __init__(self, workspace_root: Optional[str] = None):
+        self.workspace_root = os.path.abspath(workspace_root or os.environ.get("NARADA_WORKSPACE") or ".")
+        self.policy_path = os.path.join(self.workspace_root, ".agents", "AGENTS.md")
 
     def get_policy(self) -> Optional[str]:
         if os.path.exists(self.policy_path):

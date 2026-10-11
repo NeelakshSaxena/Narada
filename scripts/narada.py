@@ -5,9 +5,9 @@ import httpx
 import asyncio
 
 
-def start_server(host: str = "0.0.0.0", port: int = 8000):
+def start_server(host: str = "0.0.0.0", port: int = 8000, reload: bool = True):
     print(f"Starting Narada API on {host}:{port}")
-    uvicorn.run("apps.api.main:app", host=host, port=port)
+    uvicorn.run("apps.api.main:app", host=host, port=port, reload=reload)
 
 
 async def chat_repl():
@@ -49,6 +49,19 @@ async def chat_repl():
                         print(f"Narada> Forgotten memory {doc_id}.")
                     else:
                         print(f"Error deleting memory: {response.status_code}")
+                if user_input.strip().lower().startswith("/approve"):
+                    parts = user_input.strip().split(" ", 1)
+                    app_id = parts[1].strip() if len(parts) > 1 else None
+                    payload = {"approval_id": app_id} if app_id else {}
+                    response = await client.post("http://localhost:8000/v1/approve", json=payload, timeout=60.0)
+                    if response.status_code == 200:
+                        data = response.json()
+                        if data.get("status") == "SUCCESS":
+                            print(f"Narada> Approved and executed: {data.get('result')}")
+                        else:
+                            print(f"Narada> Approval failed: {data.get('error')}")
+                    else:
+                        print(f"Error executing approval: {response.status_code}")
                     continue
                 
                 payload = {

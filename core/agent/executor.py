@@ -10,6 +10,8 @@ class Executor:
         self.allowed_tools = allowed_tools if allowed_tools is not None else []
         self.skill_registry = skill_registry
         self.audit_log = []
+        self.pending_actions: Dict[str, Dict[str, Any]] = {}
+        self.latest_pending_approval_id = None
 
     async def execute(self, action_name: str, approval_id: str = None, **kwargs) -> Any:
         """
@@ -40,8 +42,19 @@ class Executor:
                 decision = self.permission_engine.evaluate(request)
                 
                 if decision.requires_approval:
+                    self.pending_actions[decision.approval_id] = {
+                        "action": action_name,
+                        "kwargs": kwargs
+                    }
+                    self.latest_pending_approval_id = decision.approval_id
                     self.audit_log.append({"action": action_name, "status": "PENDING_APPROVAL", "approval_id": decision.approval_id})
-                    return {"status": "PENDING_APPROVAL", "approval_id": decision.approval_id, "message": decision.reason}
+                    return {
+                        "status": "PENDING_APPROVAL",
+                        "approval_id": decision.approval_id,
+                        "message": decision.reason,
+                        "action": action_name,
+                        "kwargs": kwargs
+                    }
 
             # 4. Execute (only reached if NOT_REQUIRED or APPROVED)
             result = await tool.execute(**kwargs)
@@ -57,6 +70,22 @@ class Executor:
         except Exception as e:
             self.audit_log.append({"action": action_name, "status": "FAILED", "error": str(e)})
             return {"status": "FAILED", "error": str(e)}
+
+    async def execute_pending(self, approval_id: str = None) -> Any:
+        """Grants approval and executes a pending action."""
+        app_id = approval_id or self.latest_pending_approval_id
+        if not app_id or app_id not in self.pending_actions:
+            return {"status": "FAILED", "error": f"No pending action found for approval ID: {app_id}"}
+        
+        pending = self.pending_actions[app_id]
+        self.permission_engine.grant_approval(app_id, identity="human_user")
+        
+        result = await self.execute(pending["action"], approval_id=app_id, **pending["kwargs"])
+        if isinstance(result, dict) and result.get("status") == "SUCCESS":
+            del self.pending_actions[app_id]
+            if self.latest_pending_approval_id == app_id:
+                self.latest_pending_approval_id = None
+        return result
 
     def load_skill(self, skill_name: str) -> str:
         """Loads a predefined procedural workflow constraint for the LLM"""

@@ -1,17 +1,21 @@
+import os
 import uuid
 from core.permissions.models import RiskLevel, ApprovalStatus, PermissionRequest, PermissionDecision
 
 class PermissionEngine:
-    def __init__(self):
+    def __init__(self, auto_approve_writes: bool = False):
         # In a real system, this state lives in DB
         self.pending_approvals = {}
+        self.auto_approve_writes = auto_approve_writes or (
+            os.environ.get("NARADA_AUTO_APPROVE_WRITES", "").lower() in ("true", "1", "yes")
+        )
 
     def get_baseline_risk(self, tool_name: str) -> RiskLevel:
         base_name = tool_name.replace("mcp.", "")
-        if base_name in ["filesystem.read", "web.search", "web.open", "dummy_action"]:
+        if base_name in ["filesystem.read", "filesystem.list", "web.search", "web.open", "dummy_action"]:
             return RiskLevel.LOW
         elif base_name in ["filesystem.write"]:
-            return RiskLevel.MEDIUM
+            return RiskLevel.LOW if self.auto_approve_writes else RiskLevel.MEDIUM
         elif base_name in ["shell.execute", "message.send"]:
             return RiskLevel.HIGH
         elif base_name in ["data.delete", "system.deploy"]:

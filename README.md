@@ -88,13 +88,32 @@ The initial priority is the **agent loop**, not the UI.
 
 > **Prove that Nārada can reason, act, observe, remember, and continue before building a sophisticated interface around it.**
 
-## What's Working Right Now (v1.0.0)
+## What's Working Right Now (v1.1.0)
 
-Nārada has completed its foundational V1 build (Phases 0–65) and currently supports the following capabilities:
+Nārada has completed its foundational V1 build and the **v1.1.0** milestone featuring strict workspace sandboxing, categorized directories, human-in-the-loop approvals, and multi-turn reasoning with thought signature preservation:
+
+**Workspace Sandboxing & Categorization (v1.1.0)**
+- **Dedicated Operational Workspace**: All filesystem operations (`read`, `write`, `list`) are strictly confined to the designated `workspace/` directory, preventing arbitrary filesystem traversal.
+- **Structured Categories**: Standardized subdirectories for clean organization:
+  - `documents/`: Notes, text files, drafts, and documentation.
+  - `code/`: Scripts, snippets, and automation programs.
+  - `data/`: Datasets, raw inputs, JSON, and CSV files.
+  - `outputs/`: Deliverables, generated reports, and exports.
+  - `temp/`: Scratchpad files and transient drafts.
+- **Directory Discovery (`filesystem.list`)**: Built-in tool allowing Nārada to explore workspace directory trees and categories safely.
+
+**Interactive Approvals & Control (v1.1.0)**
+- **Interactive Approval Pause**: Consequential actions (such as filesystem write operations) gracefully pause the execution loop with `PENDING_APPROVAL`, prompt the user with full action context, and resume upon confirmation.
+- **Confirmation Channels**: Supports `/approve` command, chat confirmation keywords ("yes", "approve", "proceed"), and a dedicated `/v1/approve` REST endpoint.
+- **Frictionless Local Testing**: Configurable `NARADA_AUTO_APPROVE_WRITES` environment flag for automated local test sessions.
+
+**Multi-Turn Provider Reasoning & Thought Signatures (v1.1.0)**
+- **Thought Signature & Call ID Preservation**: Full support for Google Gemini 3-series thinking models (`gemini-3.1-flash-lite`), preserving `thoughtSignature` and `id` across tool execution turns.
+- **Multi-Turn Message Normalization**: Preserves `tool_calls`, `tool_call_id`, and `name` attributes across OpenAI, Gemini, and generic provider gateways so multi-step tool loops synthesize results in a single turn without hitting iteration caps.
 
 **Core Agent Runtime**
 - **Stateful Agent Loop**: End-to-end autonomous reasoning, planning, tool execution, and memory integration.
-- **Provider Gateway**: Seamless switching between models (e.g., Ollama, Sarvam) with dynamic routing based on cost, latency, and privacy.
+- **Provider Gateway**: Seamless switching between models (e.g., Ollama, Sarvam, Gemini) with dynamic routing based on cost, latency, and privacy.
 - **Interactive Chat & Terminal UI**: Fully functioning CLI, interactive Textual-based Mascot UI, and Open WebUI compatibility.
 - **FastAPI Core**: Standardized OpenAI-compatible endpoints with a web dashboard control plane.
 
@@ -120,7 +139,10 @@ Nārada has completed its foundational V1 build (Phases 0–65) and currently su
 - **Procedural Workflows**: Reusable skill systems for repeatable agentic routines and web research pipelines.
 
 ### What You Can Do Now
-Here are a few concrete examples of what Nārada can do in v1.0.0:
+Here are a few concrete examples of what Nārada can do in v1.1.0:
+- **Organized Workspace Operations:** Tell Nārada to "write a poem to documents/poem.txt" or "read helloworld.txt". Nārada operates strictly inside `workspace/`, keeping your project and system files secure.
+- **Controlled Consequential Actions:** Ask Nārada to write a file without auto-approval. It will pause, explain the pending action, and wait for your confirmation (`/approve` or "yes").
+- **Multi-Turn Tool Synthesis:** Give Nārada multi-step goals; it executes tools, tracks observations, and returns conversational synthesis without exceeding iteration limits.
 - **Assign Long-Running Goals:** "Monitor the status of my GitHub repository and notify me if a new PR is opened." Nārada will wake up periodically in the background, check the status, and report back.
 - **Delegate Code Tasks:** Ask Nārada to "review the last 3 commits and write a summary." It will spin up a sandbox and use its Git/Coding tools to safely generate a report.
 - **Auditable Safety:** Tell Nārada to "delete the temporary files in my project." Nārada will realize this is a destructive action and pause to request human approval before executing it.

@@ -7,12 +7,19 @@ from core.llm.models import LLMError
 from providers.llm.catalog import mask_secret
 
 
-def normalize_messages(prompt: str, kwargs: Dict[str, Any]) -> List[Dict[str, str]]:
+def normalize_messages(prompt: str, kwargs: Dict[str, Any]) -> List[Dict[str, Any]]:
     """Return an OpenAI-style message list from either `messages=` or a raw prompt."""
     messages = kwargs.get("messages")
     if not messages:
         messages = [{"role": "user", "content": prompt}]
-    return [{"role": m["role"], "content": m["content"]} for m in messages]
+    result = []
+    for m in messages:
+        entry = {"role": m["role"], "content": m.get("content")}
+        for key in ("tool_calls", "tool_call_id", "name", "thoughtSignature"):
+            if key in m:
+                entry[key] = m[key]
+        result.append(entry)
+    return result
 
 
 def _error_detail(resp: httpx.Response) -> str:

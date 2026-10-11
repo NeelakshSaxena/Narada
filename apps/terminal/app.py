@@ -9,6 +9,7 @@ from rich.markdown import Markdown
 from apps.terminal.mascot import MascotWidget
 
 import asyncio
+from typing import Optional
 import httpx
 
 from apps.terminal.session import TerminalSessionManager
@@ -172,7 +173,7 @@ class NaradaTerminalUI(App):
             
             cfg = load_config()
             sidebar_info = self.query_one("#sidebar-info", Static)
-            workspace = os.path.expanduser("~/.narada")
+            workspace = cfg.workspace if (cfg and cfg.workspace) else os.environ.get("NARADA_WORKSPACE", os.getcwd())
             self.session_id = datetime.now().strftime("%Y%m%d_%H%M%S") + "_" + str(uuid.uuid4())[:6]
             self.session_manager.create_session(self.session_id)
             
@@ -188,7 +189,7 @@ class NaradaTerminalUI(App):
                 )
                 sidebar_info.update(header + 
                     "[bold #ffb828]Available Tools[/]\n"
-                    "[#879854]filesystem:[/] read_file, write_file\n"
+                    "[#879854]filesystem:[/] read_file, write_file, list_dir\n"
                     "[#879854]system:[/] execute_shell, manage_task\n"
                     "[#879854]web:[/] search_web, read_url\n"
                     "[dim](and 5 more tools...)[/]\n"
@@ -298,6 +299,12 @@ class NaradaTerminalUI(App):
             self.run_worker(self.process_forget(doc_id), exclusive=True)
             return
             
+        if user_text.lower().startswith("/approve"):
+            parts = user_text.strip().split(" ", 1)
+            approval_id = parts[1].strip() if len(parts) > 1 else None
+            self.run_worker(self.process_approve(approval_id), exclusive=True)
+            return
+
         if user_text.lower().startswith("/session "):
             self.run_worker(self.process_session_command(user_text), exclusive=True)
             return
@@ -333,7 +340,7 @@ class NaradaTerminalUI(App):
             
             cfg = load_config()
             sidebar_info = self.query_one("#sidebar-info", Static)
-            workspace = os.path.expanduser("~/.narada")
+            workspace = cfg.workspace if (cfg and cfg.workspace) else os.environ.get("NARADA_WORKSPACE", os.getcwd())
             label = provider_label(cfg.llm.provider) if cfg.is_configured else "Unknown"
             model = cfg.llm.model if cfg.is_configured else "Unknown"
             
@@ -368,7 +375,7 @@ class NaradaTerminalUI(App):
                 
                 cfg = load_config()
                 sidebar_info = self.query_one("#sidebar-info", Static)
-                workspace = os.path.expanduser("~/.narada")
+                workspace = cfg.workspace if (cfg and cfg.workspace) else os.environ.get("NARADA_WORKSPACE", os.getcwd())
                 label = provider_label(cfg.llm.provider) if cfg.is_configured else "Unknown"
                 model = cfg.llm.model if cfg.is_configured else "Unknown"
                 
@@ -379,7 +386,7 @@ class NaradaTerminalUI(App):
                 )
                 sidebar_info.update(header + 
                     "[bold #ffb828]Available Tools[/]\n"
-                    "[#879854]filesystem:[/] read_file, write_file\n"
+                    "[#879854]filesystem:[/] read_file, write_file, list_dir\n"
                     "[#879854]system:[/] execute_shell, manage_task\n"
                     "[#879854]web:[/] search_web, read_url\n"
                     "[dim](and 5 more tools...)[/]\n"
@@ -460,6 +467,31 @@ class NaradaTerminalUI(App):
                 else:
                     self.mascot.set_state("error")
                     self.log_widget.write(Text(f"System: Error deleting memory ({response.status_code})\n", style="bold red"))
+        except Exception as e:
+            self.mascot.set_state("error")
+            self.log_widget.write(Text(f"System: Connection failed: {e}\n", style="bold red"))
+            
+    async def process_approve(self, approval_id: Optional[str] = None) -> None:
+        self.mascot.set_state("working")
+        self.status_panel.status_text = "WORKING"
+        try:
+            async with httpx.AsyncClient() as client:
+                payload = {"approval_id": approval_id} if approval_id else {}
+                response = await client.post("http://localhost:8000/v1/approve", json=payload, timeout=60.0)
+                if response.status_code == 200:
+                    data = response.json()
+                    t = Text()
+                    t.append("Nārada\n\n", style="bold #d4af37")
+                    if data.get("status") == "SUCCESS":
+                        t.append(f"Approved and executed: {data.get('result')}\n", style="green")
+                        self.mascot.set_state("success")
+                    else:
+                        t.append(f"Approval failed: {data.get('error')}\n", style="red")
+                        self.mascot.set_state("error")
+                    self.log_widget.write(t)
+                else:
+                    self.mascot.set_state("error")
+                    self.log_widget.write(Text(f"System: Error executing approval ({response.status_code})\n", style="bold red"))
         except Exception as e:
             self.mascot.set_state("error")
             self.log_widget.write(Text(f"System: Connection failed: {e}\n", style="bold red"))

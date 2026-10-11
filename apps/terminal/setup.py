@@ -327,6 +327,7 @@ def run_setup():
     # Non-secret configuration
     config = {
         "user": user_name,
+        "workspace": os.getcwd(),
         "llm": llm_config,
         "memory": {"type": memory_type.lower()},
     }

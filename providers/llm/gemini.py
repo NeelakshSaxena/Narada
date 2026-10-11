@@ -1,3 +1,4 @@
+import json
 from typing import Optional
 
 import httpx
@@ -39,25 +40,41 @@ class GeminiProvider(HTTPLLMProvider, LLMProvider):
                 for call in tool_calls:
                     if call.get("type") == "function":
                         fn = call.get("function", {})
-                        parts.append({
-                            "functionCall": {
-                                "name": fn.get("name"),
-                                "args": fn.get("arguments", {})
-                            }
-                        })
+                        fn_call = {
+                            "name": fn.get("name"),
+                            "args": fn.get("arguments", {})
+                        }
+                        if call.get("id"):
+                            fn_call["id"] = call["id"]
+                        part = {"functionCall": fn_call}
+                        if call.get("thoughtSignature"):
+                            part["thoughtSignature"] = call["thoughtSignature"]
+                        parts.append(part)
                 contents.append({"role": "model", "parts": parts})
             elif m["role"] == "tool":
                 # Map to functionResponse
                 name = m.get("name", "unknown")
-                contents.append({
-                    "role": "user", 
-                    "parts": [{
-                        "functionResponse": {
-                            "name": name,
-                            "response": {"result": m["content"]}
-                        }
-                    }]
-                })
+                raw_content = m.get("content", "")
+                try:
+                    resp_obj = json.loads(raw_content) if isinstance(raw_content, str) else raw_content
+                    if not isinstance(resp_obj, dict):
+                        resp_obj = {"result": resp_obj}
+                except Exception:
+                    resp_obj = {"result": raw_content}
+
+                fn_resp = {
+                    "name": name,
+                    "response": resp_obj
+                }
+                if m.get("tool_call_id"):
+                    fn_resp["id"] = m["tool_call_id"]
+
+                part = {"functionResponse": fn_resp}
+                # If the previous turn is already a user turn, append part to it (Gemini requires grouping consecutive user/function parts into a single turn)
+                if contents and contents[-1]["role"] == "user":
+                    contents[-1]["parts"].append(part)
+                else:
+                    contents.append({"role": "user", "parts": [part]})
         body = {"contents": contents}
         if system:
             body["systemInstruction"] = {"parts": [{"text": system}]}
@@ -96,13 +113,17 @@ class GeminiProvider(HTTPLLMProvider, LLMProvider):
                     text += p["text"]
                 elif "functionCall" in p:
                     call = p["functionCall"]
-                    tool_calls.append({
+                    tool_call = {
+                        "id": call.get("id"),
                         "type": "function",
                         "function": {
                             "name": call.get("name"),
                             "arguments": call.get("args", {})
                         }
-                    })
+                    }
+                    if "thoughtSignature" in p:
+                        tool_call["thoughtSignature"] = p["thoughtSignature"]
+                    tool_calls.append(tool_call)
         except (KeyError, IndexError, TypeError):
             pass
             

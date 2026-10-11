@@ -14,7 +14,7 @@ from core.config.envfile import read_env_file
 
 
 # Default workspace location
-NARADA_HOME = os.path.expanduser("~/.narada")
+NARADA_HOME = os.environ.get("NARADA_HOME", os.path.expanduser("~/.narada"))
 CONFIG_PATH = os.path.join(NARADA_HOME, "config", "config.yaml")
 ENV_PATH = os.path.join(NARADA_HOME, ".env")
 
@@ -36,6 +36,8 @@ class LLMConfig:
 class NaradaConfig:
     """Top-level Nārada configuration (no secrets)."""
     user: str = ""
+    workspace: str = ""
+    auto_approve_writes: bool = False
     llm: LLMConfig = field(default_factory=LLMConfig)
     memory: Dict[str, str] = field(default_factory=lambda: {"type": "sqlite"})
     raw: Dict[str, Any] = field(default_factory=dict)
@@ -56,8 +58,16 @@ def load_config(
     """
     config_path = config_path or CONFIG_PATH
 
+    if os.environ.get("NARADA_WORKSPACE"):
+        default_workspace = os.path.abspath(os.environ["NARADA_WORKSPACE"])
+    elif os.path.isdir(os.path.join(os.getcwd(), "workspace")):
+        default_workspace = os.path.abspath(os.path.join(os.getcwd(), "workspace"))
+    else:
+        default_workspace = os.path.abspath(os.getcwd())
+    auto_approve_writes = os.environ.get("NARADA_AUTO_APPROVE_WRITES", "").lower() in ("true", "1", "yes")
+
     if not os.path.exists(config_path):
-        return NaradaConfig()
+        return NaradaConfig(workspace=default_workspace, auto_approve_writes=auto_approve_writes)
 
     with open(config_path, "r", encoding="utf-8") as f:
         raw = yaml.safe_load(f) or {}
@@ -73,9 +83,13 @@ def load_config(
     )
 
     memory_raw = raw.get("memory") or {}
+    workspace = os.path.abspath(raw.get("workspace") or default_workspace)
+    auto_approve = bool(raw.get("auto_approve_writes", False) or auto_approve_writes)
 
     return NaradaConfig(
         user=raw.get("user", ""),
+        workspace=workspace,
+        auto_approve_writes=auto_approve,
         llm=llm,
         memory=memory_raw,
         raw=raw,

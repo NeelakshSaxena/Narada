@@ -1,9 +1,9 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from pydantic import BaseModel
+from typing import Optional, List, Dict
 import logging
 import time
 import uuid
-from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 
 from core.config.loader import load_config, load_secrets
@@ -27,7 +27,12 @@ _provider = create_provider(
 ) if _config.is_configured else create_provider(
     {"provider": "ollama", "model": "llama2"},
 )
-core = NaradaCore(_provider, user_name=_config.user if _config.user else "User")
+core = NaradaCore(
+    _provider,
+    user_name=_config.user if _config.user else "User",
+    workspace=_config.workspace if _config.workspace else None,
+    auto_approve_writes=_config.auto_approve_writes,
+)
 
 @app.middleware("http")
 async def telemetry_middleware(request: Request, call_next):
@@ -96,6 +101,14 @@ async def chat_completions(req: ChatRequest):
             "finish_reason": "stop"
         }]
     }
+
+class ApproveRequest(BaseModel):
+    approval_id: str = None
+
+@app.post("/v1/approve")
+async def approve_action(req: ApproveRequest = None):
+    app_id = req.approval_id if req else None
+    return await core.approve_pending(app_id)
 
 @app.on_event("startup")
 async def startup_event():
